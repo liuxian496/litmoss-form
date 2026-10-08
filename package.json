@@ -96,5 +96,9 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/liuxian496/litmoss-form.git"
   }
 }
