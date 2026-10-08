@@ -4,19 +4,21 @@
 
 ## 目录
 
-- [1. 概述](#1-概述)
-- [2. `useFormItemValue` 详解](#2-useformitemvalue-详解)
-- [3. `useHelperInfo` 详解](#3-usehelperinfo-详解)
-- [4. 两种封装模式](#4-两种封装模式)
-  - [模式 A：需要校验提示（组合使用两个 Hook）](#模式-a需要校验提示组合使用两个-hook)
-  - [模式 B：无需校验提示（仅使用 `useFormItemValue`）](#模式-b无需校验提示仅使用-useformitemvalue)
-  - [4.3 完整示例](#43-完整示例)
-- [5. 封装一个新表单组件的步骤](#5-封装一个新表单组件的步骤)
-- [6. 注意事项](#6-注意事项)
+- [使用 useFormItemValue 与 useHelperInfo 封装表单组件指南](#使用-useformitemvalue-与-usehelperinfo-封装表单组件指南)
+  - [目录](#目录)
+  - [1. 概述](#1-概述)
+  - [2. `useFormItemValue` 详解](#2-useformitemvalue-详解)
+  - [3. `useHelperInfo` 详解](#3-usehelperinfo-详解)
+  - [4. 两种封装模式](#4-两种封装模式)
+    - [模式 A：需要校验提示（组合使用两个 Hook）](#模式-a需要校验提示组合使用两个-hook)
+    - [模式 B：无需校验提示（仅使用 `useFormItemValue`）](#模式-b无需校验提示仅使用-useformitemvalue)
+    - [4.3 完整示例](#43-完整示例)
+  - [5. 封装一个新表单组件的步骤](#5-封装一个新表单组件的步骤)
+  - [6. 注意事项](#6-注意事项)
 
 ## 1. 概述
 
-在litten-form的表单体系中，一个表单控件通常需要具备两种能力：
+在litmoss-form的表单体系中，一个表单控件通常需要具备两种能力：
 
 - **受控值管理**：将组件的值同步到表单上下文（`FormContext`）中，使外部表单容器可以统一获取值、设置值、触发校验、聚焦出错字段。
 - **校验提示管理**：根据传入的校验规则（`validations`），在合适的时机（如 `onBlur`）执行校验，并维护当前的提示文本（`FormHelperInfo`）状态。
@@ -24,7 +26,7 @@
 为了让职责单一、便于复用，这两部分能力被拆分成了两个独立的 Hook：
 
 | Hook               | 职责                                                 | 源码位置                                                                              |
-| ------------------ | ---------------------------------------------------- | ------------------------------------------------------------------------------------- |
+|--------------------|------------------------------------------------------|---------------------------------------------------------------------------------------|
 | `useFormItemValue` | 管理表单项的值，并向 `FormContext` 注册/卸载该表单项 | [src/components/form/useFormItemValue.ts](../src/components/form/useFormItemValue.ts) |
 | `useHelperInfo`    | 执行校验规则，管理校验提示文本状态                   | [src/components/form/useHelperInfo.ts](../src/components/form/useHelperInfo.ts)       |
 
@@ -123,7 +125,7 @@ const [value, setValue] = useFormItemValue<boolean>(path, initialValue);
 ```tsx
 import { useRef, type ChangeEvent, type FocusEvent } from 'react';
 
-import { TextField } from 'litten/dist/textField';
+import { TextField } from 'litmoss/dist/textField';
 import { ControlType, getDefaultValueByDisplayName } from 'litten-hooks';
 import type {
   LittenEvent,

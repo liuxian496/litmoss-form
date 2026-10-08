@@ -38,12 +38,12 @@ argument-hint: '可选：要运行的具体 story 名称或测试名称'
 ```
 src/
   stories/
-    littenForm.stories.tsx          # 顶层 stories 文件：导出 TextField, Checkbox, InitialValue
-    littenForm/
+    litmossForm.stories.tsx          # 顶层 stories 文件：导出 TextField, Checkbox, InitialValue
+    litmossForm/
       checkboxStory.tsx             # Checkbox 测试实现（导出 CheckboxTest）
       initialValueStory.tsx         # InitialValue 测试实现（导出 InitialValueTest）
       textFieldStory.tsx            # TextField 测试实现（导出 TextFieldTest）
-      littenFormStory.types.ts      # 类型定义（非 story）
+      litmossFormStory.types.ts      # 类型定义（非 story）
     nativeForm.stories.tsx          # 顶层 stories 文件：导出 TextField, Checkbox, ValidationBasic 等
     nativeForm/
       checkboxStory.tsx             # Checkbox 测试实现
@@ -89,7 +89,7 @@ npx vitest run --project=storybook src/stories/nativeForm.stories.tsx
 npx vitest run --project=storybook
 ```
 
-> ⚠️ 不指定文件路径时，`-t` 子串匹配会搜索所有测试文件。`Checkbox`、`TextField`、`InitialValue` 同时存在于 `nativeForm` 和 `littenForm` 文件中，若只写 `-t "Checkbox"` 会同时运行两个文件下的同名测试。务必指定文件路径来精确定位。
+> ⚠️ 不指定文件路径时，`-t` 子串匹配会搜索所有测试文件。`Checkbox`、`TextField`、`InitialValue` 同时存在于 `nativeForm` 和 `litmossForm` 文件中，若只写 `-t "Checkbox"` 会同时运行两个文件下的同名测试。务必指定文件路径来精确定位。
 
 ## 示例
 
@@ -126,14 +126,14 @@ Story 名称: "Text Field"
 ### 示例 3：从 .stories.tsx 文件运行（用户指定）
 
 ```
-当前文件: src/stories/littenForm.stories.tsx
+当前文件: src/stories/litmossForm.stories.tsx
 导出: TextField, Checkbox, InitialValue
 ↓
 用户说 "run checkbox"
 ↓
 匹配 "checkbox" → "Checkbox"
 ↓
-运行: npx vitest run --project=storybook src/stories/littenForm.stories.tsx -t "Checkbox"
+运行: npx vitest run --project=storybook src/stories/litmossForm.stories.tsx -t "Checkbox"
 ```
 
 ### 示例 4：从 .stories.tsx 文件运行（未指定）
@@ -197,7 +197,7 @@ Story 名称是 "UseHelperInfo Branch"（而非 "Use Helper Info Branch"）
 
 ## 完整的 Story 名称映射表
 
-### littenForm.stories.tsx
+### litmossForm.stories.tsx
 
 | 导出名           | Story 名称        |
 | ---------------- | ----------------- |
@@ -233,7 +233,7 @@ Story 名称是 "UseHelperInfo Branch"（而非 "Use Helper Info Branch"）
 ## 错误处理
 
 - 如果当前文件不是 story 或 story 实现文件，搜索 `src/stories/` 下的相关文件
-- 如果导出名同时存在于多个 `.stories.tsx`（如 `TextField`、`Checkbox`、`InitialValue` 在 littenForm 和 nativeForm 中都存在），务必指定文件路径来精确定位
+- 如果导出名同时存在于多个 `.stories.tsx`（如 `TextField`、`Checkbox`、`InitialValue` 在 litmossForm 和 nativeForm 中都存在），务必指定文件路径来精确定位
 - 如果测试名称在映射的 `.stories.tsx` 中未找到，列出该文件中的可用测试并停止
 - 首次运行若报浏览器相关错误（Playwright 未安装 Chromium），提示执行 `npx playwright install chromium` 后重试
 - 如果命令执行失败，显示错误并建议检查 Storybook 配置（`vite.config.mts` 中的 `test.projects[0]`）是否正确

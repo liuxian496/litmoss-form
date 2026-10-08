@@ -1,10 +1,10 @@
 import type { Preview } from '@storybook/react-vite';
-import 'litten/dist/assets/button.css';
-import 'litten/dist/assets/checkbox.css';
-import 'litten/dist/assets/formLabel.css';
-import 'litten/dist/assets/ripple.css';
-import 'litten/dist/assets/stackPanel.css';
-import 'litten/dist/assets/textField.css';
+import 'litmoss/dist/assets/button.css';
+import 'litmoss/dist/assets/checkbox.css';
+import 'litmoss/dist/assets/formLabel.css';
+import 'litmoss/dist/assets/ripple.css';
+import 'litmoss/dist/assets/stackPanel.css';
+import 'litmoss/dist/assets/textField.css';
 
 import { initLittenForm } from '../src/components/inject';
 import {

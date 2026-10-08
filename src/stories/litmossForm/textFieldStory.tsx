@@ -1,9 +1,9 @@
 import { useState } from 'react';
 
-import { Button } from 'litten/dist/button';
-import { Mode } from 'litten/dist/enum';
-import { FormLabel } from 'litten/dist/formLabel';
-import { StackPanel } from 'litten/dist/stackPanel';
+import { Button } from 'litmoss/dist/button';
+import { Mode } from 'litmoss/dist/enum';
+import { FormLabel } from 'litmoss/dist/formLabel';
+import { StackPanel } from 'litmoss/dist/stackPanel';
 import { Placement } from 'litten-hooks';
 import { expect, userEvent, within } from 'storybook/test';
 
@@ -12,7 +12,8 @@ import { LittenTextField } from '../../pockets/littenForm/littenTextField';
 
 import { Form } from '../../components/form/form';
 import { useForm } from '../../components/form/useForm';
-import { type FormStory } from '../littenForm/littenFormStory.types';
+
+import { type FormStory } from './littenFormStory.types';
 
 // eslint-disable-next-line react-refresh/only-export-components
 const Test = () => {

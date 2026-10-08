@@ -33,7 +33,7 @@ export default defineConfig({
       entry: {
         index: 'src/index.ts',
       },
-      name: 'littenForm',
+      name: 'litmossForm',
       fileName: 'index',
     },
     outDir: 'dist',

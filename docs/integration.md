@@ -1,6 +1,6 @@
-# litten-form 接入文档
+# litmoss-form 接入文档
 
-本文档用于在业务工程中接入 litten-form，重点说明全局初始化、验证能力注入和常见接入方式。
+本文档用于在业务工程中接入 litmoss-form，重点说明全局初始化、验证能力注入和常见接入方式。
 
 ## 1. 必做项：在工程入口全局初始化
 
@@ -20,7 +20,7 @@
 示例：
 
 ```ts
-import { initLittenForm } from 'litten-form';
+import { initLittenForm } from 'litmoss-form';
 import {
   commonValidationAssert,
   getDefaultHelperInfo,
@@ -51,7 +51,7 @@ initLittenForm 接收 FormInjector：
 参考实现：
 
 ```ts
-import { BaseValidationType } from 'litten-form/dist/components/form/formBase';
+import { BaseValidationType } from 'litmoss-form/dist/components/form/formBase';
 
 export const ValidationType = {
   ...BaseValidationType,
@@ -94,7 +94,7 @@ export function getDefaultHelperInfo(validationType: ValidationType) {
 示例：
 
 ```tsx
-import { Form, useForm } from 'litten-form';
+import { Form, useForm } from 'litmoss-form';
 
 function Demo() {
   const [formRef, form] = useForm();

@@ -42,8 +42,8 @@ src/stories/
     textFieldStory.tsx            # Test component + play() for TextField story
     validationStory.tsx           # Test component + play() for ValidationBasic story
     ...                           # etc.
-  littenForm.stories.tsx          # Story file: title='Test/Litten Form'
-  littenForm/
+  litmossForm.stories.tsx          # Story file: title='Test/Litmoss Form'
+  litmossForm/
     checkboxStory.tsx
     textFieldStory.tsx
     initialValueStory.tsx
@@ -68,9 +68,9 @@ src/stories/
 |                                      |                    | `MultiForm`          | `Multi Form`           | `src/stories/nativeForm/multiFormStory.tsx`           |
 |                                      |                    | `Focus`              | `Focus`                | `src/stories/nativeForm/focusStory.tsx`               |
 |                                      |                    | `InitialValue`       | `Initial Value`        | `src/stories/nativeForm/initialValueStory.tsx`        |
-| `src/stories/littenForm.stories.tsx` | `Test/Litten Form` | `TextField`          | `Text Field`           | `src/stories/littenForm/textFieldStory.tsx`           |
-|                                      |                    | `Checkbox`           | `Checkbox`             | `src/stories/littenForm/checkboxStory.tsx`            |
-|                                      |                    | `InitialValue`       | `Initial Value`        | `src/stories/littenForm/initialValueStory.tsx`        |
+| `src/stories/litmossForm.stories.tsx` | `Test/Litmoss Form` | `TextField`          | `Text Field`           | `src/stories/litmossForm/textFieldStory.tsx`           |
+|                                      |                    | `Checkbox`           | `Checkbox`             | `src/stories/litmossForm/checkboxStory.tsx`            |
+|                                      |                    | `InitialValue`       | `Initial Value`        | `src/stories/litmossForm/initialValueStory.tsx`        |
 | `src/stories/mounter.stories.tsx`    | `Test/Mounter`     | `CascadingForm`      | `Cascading Form`       | `src/stories/mounter/cascadingFormStory.tsx`          |
 
 ⚠️ `UseHelperInfo` has `name: 'UseHelperInfo Branch'` → its vitest test name is `UseHelperInfo Branch`, not `Use Helper Info`.
@@ -199,8 +199,8 @@ Run: npx vitest run --project=storybook -t "UseHelperInfo Branch"
 # All tests under Test/Form
 npx vitest run --project=storybook -t "Test/Form"
 
-# All tests under Test/Litten Form
-npx vitest run --project=storybook -t "Test/Litten Form"
+# All tests under Test/Litmoss Form
+npx vitest run --project=storybook -t "Test/Litmoss Form"
 ```
 
 ## Vitest Test Name Format
@@ -220,7 +220,7 @@ Examples:
 
 When using `-t`, you can match a substring like `"Text Field"` or the full path `"Test/Form/Text Field"`.
 If multiple tests match the pattern (e.g., `"Checkbox"` matches both `Test/Form/Checkbox` and
-`Test/Litten Form/Checkbox`), vitest runs ALL matching tests.
+`Test/Litmoss Form/Checkbox`), vitest runs ALL matching tests.
 
 ## Tech Stack
 

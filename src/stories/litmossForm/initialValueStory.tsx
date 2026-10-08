@@ -1,4 +1,4 @@
-import { FormLabel, StackPanel } from 'litten';
+import { FormLabel, StackPanel } from 'litmoss';
 import { Placement } from 'litten-hooks';
 
 import { LittenCheckbox, LittenTextField } from '@/pockets';

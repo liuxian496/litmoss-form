@@ -1,5 +1,5 @@
 {
-  "name": "litten-form",
+  "name": "litmoss-form",
   "private": false,
   "version": "4.2.0",
   "type": "module",
@@ -71,7 +71,7 @@
     "eslint-plugin-storybook": "^10.3.3",
     "husky": "^9.0.11",
     "less": "^4.2.0",
-    "litten": "^2.0.0",
+    "litmoss": "^3.0.0",
     "playwright": "^1.59.0",
     "rollup-plugin-visualizer": "^5.12.0",
     "storybook": "^10.3.3",
