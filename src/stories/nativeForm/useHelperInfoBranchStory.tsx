@@ -75,7 +75,7 @@ export const UseHelperInfoBranchTest: FormStory = {
   },
   render: () => <Test />,
   play: async ({ canvas, step }) => {
-    const warnSpy = spyOn(console, 'warn').mockImplementation(() => {});
+    const warnSpy = spyOn(console, 'warn').mockImplementation(() => { });
     const saveButton = canvas.getByText('Save');
 
     try {
@@ -127,7 +127,7 @@ export const UseHelperInfoBranchTest: FormStory = {
       });
 
       await step(
-        `Reset [initLittenForm] with commonValidationAssert and getDefaultHelperInfo, Click Save Button, Then helper info is shown`,
+        `Reset [initLitmossForm] with commonValidationAssert and getDefaultHelperInfo, Click Save Button, Then helper info is shown`,
         async () => {
           await userEvent.click(saveButton);
 

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
-import { Button } from 'litten/dist/button';
-import { FormLabel } from 'litten/dist/formLabel';
+import { Button } from 'litmoss/dist/button';
+import { FormLabel } from 'litmoss/dist/formLabel';
 import { expect, userEvent, within } from 'storybook/test';
 
 import { type BasicFormData, FormPaths } from '../../pockets/form/form.types';

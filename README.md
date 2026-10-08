@@ -1,17 +1,17 @@
-# litten-form
+# litmoss-form
 
-![GitHub](https://img.shields.io/github/license/liuxian496/litten-form)
-![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/liuxian496/litten-form/test.yml)
-[![Coverage Status](https://coveralls.io/repos/github/liuxian496/litten-form/badge.svg?branch=main)](https://coveralls.io/github/liuxian496/litten-form?branch=main)
-![GitHub Repo stars](https://img.shields.io/github/stars/liuxian496/litten-form)
+![GitHub](https://img.shields.io/github/license/liuxian496/litmoss-form)
+![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/liuxian496/litmoss-form/test.yml)
+[![Coverage Status](https://coveralls.io/repos/github/liuxian496/litmoss/badge.svg)](https://coveralls.io/github/liuxian496/litmoss)
+![GitHub Repo stars](https://img.shields.io/github/stars/liuxian496/litmoss-form)
 
-<p>litten-form基于react，提供跨组件的表单数据收集功能。通过useForm，用命令式的方式，获取、修改表单数据。</p>
+<p>litmoss-form基于react，提供跨组件的表单数据收集功能。通过useForm，用命令式的方式，获取、修改表单数据。</p>
 
 <p>
 主页
 </p>
 
-[https://liuxian496.github.io/litten-form/](https://liuxian496.github.io/litten-form/)
+[https://liuxian496.github.io/litmoss-form/](https://liuxian496.github.io/litmoss-form/)
 
 ## 依赖
 

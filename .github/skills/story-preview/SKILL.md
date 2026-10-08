@@ -28,7 +28,7 @@ titles and exports are:
 | Stories File                         | Title              | Exports (story names)                                                                                                                                                                            |
 | ------------------------------------ | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `src/stories/nativeForm.stories.tsx` | `Test/Form`        | `TextField`, `Checkbox`, `DuplicateValuePath`, `ValidationBasic`, `ValidationByStep`, `ValidationBranch`, `FormUtil`, `FormUtilBranch`, `UseHelperInfo` ⚠️, `MultiForm`, `Focus`, `InitialValue` |
-| `src/stories/littenForm.stories.tsx` | `Test/Litten Form` | `TextField`, `Checkbox`, `InitialValue`                                                                                                                                                          |
+| `src/stories/litmossForm.stories.tsx` | `Test/litmoss Form` | `TextField`, `Checkbox`, `InitialValue`                                                                                                                                                          |
 | `src/stories/mounter.stories.tsx`    | `Test/Mounter`     | `CascadingForm`                                                                                                                                                                                  |
 
 ⚠️ `UseHelperInfo` has `name: 'UseHelperInfo Branch'` → its URL slug uses `usehelperinfo-branch`.
@@ -95,7 +95,7 @@ Given the actual project stories:
 | `form text field`               | `Test/Form` + `TextField`                     | `http://localhost:6006/?path=/story/test-form--text-field`                      |
 | `Form --docs`                   | `Test/Form` docs page                         | `http://localhost:6006/?path=/docs/test-form--text-field`                       |
 | `ValidationBasic --canvas`      | `Test/Form` + `ValidationBasic` + viewMode    | `http://localhost:6006/?path=/story/test-form--validation-basic&viewMode=story` |
-| `Litten Form Checkbox`          | `Test/Litten Form` + `Checkbox`               | `http://localhost:6006/?path=/story/test-litten-form--checkbox`                 |
+| `Litmoss Form Checkbox`          | `Test/Litmoss Form` + `Checkbox`               | `http://localhost:6006/?path=/story/test-litmoss-form--checkbox`                 |
 | `mounter cascading form --docs` | `Test/Mounter` + `CascadingForm` docs         | `http://localhost:6006/?path=/docs/test-mounter--cascading-form`                |
 | `UseHelperInfo Branch`          | `Test/Form` + `UseHelperInfo` (name override) | `http://localhost:6006/?path=/story/test-form--usehelperinfo-branch`            |
 
@@ -119,5 +119,5 @@ Given the actual project stories:
 - Port is **6006** by default, configurable in `package.json` → `"storybook": "storybook dev -p 6006"`.
 - If the user input doesn't match any known story, search `src/stories/` for the closest match
   using `grep_search` or `file_glob_search`.
-- When multiple stories match (e.g., "Checkbox" exists in both `Test/Form` and `Test/Litten Form`),
-  prefer `Test/Form` (the native form, more comprehensive) unless user specifies "Litten".
+- When multiple stories match (e.g., "Checkbox" exists in both `Test/Form` and `Test/litmoss Form`),
+  prefer `Test/Form` (the native form, more comprehensive) unless user specifies "Litmoss".

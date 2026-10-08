@@ -2,12 +2,12 @@ import { type Meta } from '@storybook/react-vite';
 
 import { Form } from '../components/form/form';
 
-import { CheckboxTest } from './littenForm/checkboxStory';
-import { InitialValueTest } from './littenForm/initialValueStory';
-import { TextFieldTest } from './littenForm/textFieldStory';
+import { CheckboxTest } from './litmossForm/checkboxStory';
+import { InitialValueTest } from './litmossForm/initialValueStory';
+import { TextFieldTest } from './litmossForm/textFieldStory';
 
 export default {
-  title: 'Test/Litten Form',
+  title: 'Test/Litmoss Form',
   component: Form,
   argTypes: {
     prefixCls: {

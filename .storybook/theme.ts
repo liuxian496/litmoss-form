@@ -2,7 +2,7 @@ import { create } from 'storybook/theming/create';
 
 export default create({
   base: 'light',
-  brandTitle: 'LittenForm',
-  brandImage: './litten-form.png',
+  brandTitle: 'LitmossForm',
+  brandImage: './litmoss-form.png',
   brandTarget: '_self',
 });

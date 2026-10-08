@@ -1,6 +1,6 @@
 import type { ChangeEvent } from 'react';
 
-import { Checkbox } from 'litten';
+import { Checkbox } from 'litmoss';
 import type { LittenEvent } from 'litten-hooks/dist/control/event/littenEvent.types';
 
 import { useFormItemValue } from '../../../components/form/useFormItemValue';

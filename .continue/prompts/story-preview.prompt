@@ -33,24 +33,24 @@ invokable: true
 
 #### 映射表（基于实际工程 `src/stories/` 结构）
 
-| 分类   | Story 导出名          | Story 显示名                 | Title         |
-| ------ | --------------------- | ---------------------------- | ------------- |
-| Form   | `TextField`           | "Text Field"                 | Test/Form     |
-| Form   | `Checkbox`            | "Checkbox"                   | Test/Form     |
-| Form   | `DuplicateValuePath`  | "Duplicate Value Path"       | Test/Form     |
-| Form   | `ValidationBasic`     | "Validation Basic"           | Test/Form     |
-| Form   | `ValidationByStep`    | "Validation By Step"         | Test/Form     |
-| Form   | `ValidationBranch`    | "Validation Branch"          | Test/Form     |
-| Form   | `FormUtil`            | "Form Util"                  | Test/Form     |
-| Form   | `FormUtilBranch`      | "Form Util Branch"           | Test/Form     |
-| Form   | `UseHelperInfoBranch` | "UseHelperInfo Branch" \*    | Test/Form     |
-| Form   | `MultiForm`           | "Multi Form"                 | Test/Form     |
-| Form   | `Focus`               | "Focus"                      | Test/Form     |
-| Form   | `InitialValue`        | "Initial Value"              | Test/Form     |
-| Litten | `TextField`           | "Text Field"                 | Test/Litten Form |
-| Litten | `Checkbox`            | "Checkbox"                   | Test/Litten Form |
-| Litten | `InitialValue`        | "Initial Value"              | Test/Litten Form |
-| Mounter| `CascadingForm`       | "Cascading Form"             | Test/Mounter  |
+| 分类    | Story 导出名          | Story 显示名                 | Title         |
+| ------  | --------------------- | ---------------------------- | ------------- |
+| Form    | `TextField`           | "Text Field"                 | Test/Form     |
+| Form    | `Checkbox`            | "Checkbox"                   | Test/Form     |
+| Form    | `DuplicateValuePath`  | "Duplicate Value Path"       | Test/Form     |
+| Form    | `ValidationBasic`     | "Validation Basic"           | Test/Form     |
+| Form    | `ValidationByStep`    | "Validation By Step"         | Test/Form     |
+| Form    | `ValidationBranch`    | "Validation Branch"          | Test/Form     |
+| Form    | `FormUtil`            | "Form Util"                  | Test/Form     |
+| Form    | `FormUtilBranch`      | "Form Util Branch"           | Test/Form     |
+| Form    | `UseHelperInfoBranch` | "UseHelperInfo Branch" \*    | Test/Form     |
+| Form    | `MultiForm`           | "Multi Form"                 | Test/Form     |
+| Form    | `Focus`               | "Focus"                      | Test/Form     |
+| Form    | `InitialValue`        | "Initial Value"              | Test/Form     |
+| Litmoss | `TextField`           | "Text Field"                 | Test/Litmoss Form |
+| Litmoss | `Checkbox`            | "Checkbox"                   | Test/Litmoss Form |
+| Litmoss | `InitialValue`        | "Initial Value"              | Test/Litmoss Form |
+| Mounter | `CascadingForm`       | "Cascading Form"             | Test/Mounter  |
 
 \* `UseHelperInfoBranch` 在 `nativeForm.stories.tsx` 中使用了自定义 `name: 'UseHelperInfo Branch'`
 
@@ -59,7 +59,7 @@ invokable: true
 2. 精确匹配显示名（不区分大小写）：`text field` → `TextField`
 3. 部分匹配（子串）：`validation` → 可匹配 `ValidationBasic`、`ValidationByStep`、`ValidationBranch`
 4. 如果匹配到多个，列出所有选项让用户选择
-5. 如果导出名在多个 title 下重复（如 `TextField` 同时存在于 `Test/Form` 和 `Test/Litten Form`），询问用户选择哪个
+5. 如果导出名在多个 title 下重复（如 `TextField` 同时存在于 `Test/Form` 和 `Test/Litmoss Form`），询问用户选择哪个
 
 ### 步骤 3：确定页面类型
 
@@ -74,7 +74,7 @@ Storybook URL 格式：`http://localhost:6006/?path=/story/<title-slug>--<name-s
 **URL 转换规则**：
 - title 转为小写，`/` 替换为 `-`，空格替换为 `-`
   - `Test/Form` → `test-form`
-  - `Test/Litten Form` → `test-litten-form`
+  - `Test/Litmoss Form` → `test-litmoss-form`
   - `Test/Mounter` → `test-mounter`
 - story name 取其显示名（`name` 覆盖值，或由导出名自动生成的显示名）后转为小写，将非字母数字字符（含空格）替换为 `-`；连续大写字母之间不额外插入 `-`
   - `TextField` →（显示名 `Text Field`）→ `text-field`
@@ -89,11 +89,11 @@ Storybook URL 格式：`http://localhost:6006/?path=/story/<title-slug>--<name-s
 | Form/TextField          | `http://localhost:6006/?path=/story/test-form--text-field`                   |
 | Form/ValidationBasic    | `http://localhost:6006/?path=/story/test-form--validation-basic`             |
 | Form/UseHelperInfoBranch| `http://localhost:6006/?path=/story/test-form--usehelperinfo-branch`         |
-| Litten/Checkbox         | `http://localhost:6006/?path=/story/test-litten-form--checkbox`              |
+| Litmoss/Checkbox         | `http://localhost:6006/?path=/story/test-litmoss-form--checkbox`              |
 | Mounter/CascadingForm   | `http://localhost:6006/?path=/story/test-mounter--cascading-form`            |
 | **Docs 示例**           |                                                                              |
 | Form Docs (autodocs)    | `http://localhost:6006/?path=/docs/test-form--docs`                          |
-| Litten Form Docs        | `http://localhost:6006/?path=/docs/test-litten-form--docs`                   |
+| Litmoss Form Docs        | `http://localhost:6006/?path=/docs/test-litmoss-form--docs`                   |
 
 ### 步骤 5：在浏览器中打开预览
 
@@ -147,7 +147,7 @@ xdg-open "http://localhost:6006/?path=/story/test-form--text-field"
 
 - **端口未启动**：如果 Storybook 服务未在 `localhost:6006` 运行，提示用户先执行 `npm run storybook` 启动服务
 - **匹配失败**：如果用户输入的名称不在映射表中，展示完整可用列表
-- **同名冲突**：如果匹配到多个 title 下的同名 story，列出选项让用户选择（如 `TextField` 存在于 Form 和 Litten）
+- **同名冲突**：如果匹配到多个 title 下的同名 story，列出选项让用户选择（如 `TextField` 存在于 Form 和 Litmoss）
 - **非 Storybook 文件**：如果当前文件不是 story 相关文件，提示用户提供具体名称或切换到 story 文件
 
 ## 注意事项
