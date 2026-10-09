@@ -1,7 +1,7 @@
 import { forwardRef, useImperativeHandle, useState } from 'react';
 
 import { ExceptionBoundary } from 'exception-boundary';
-import { ControlType } from 'litten-hooks/dist/enum';
+import { ControlType } from 'litmoss-hooks/dist/enum';
 
 import { validate } from '../validation';
 

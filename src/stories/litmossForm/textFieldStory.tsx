@@ -4,7 +4,7 @@ import { Button } from 'litmoss/dist/button';
 import { Mode } from 'litmoss/dist/enum';
 import { FormLabel } from 'litmoss/dist/formLabel';
 import { StackPanel } from 'litmoss/dist/stackPanel';
-import { Placement } from 'litten-hooks';
+import { Placement } from 'litmoss-hooks';
 import { expect, userEvent, within } from 'storybook/test';
 
 import { FormPaths, type BasicFormData } from '../../pockets/form';

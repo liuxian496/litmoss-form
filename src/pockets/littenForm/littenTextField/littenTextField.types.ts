@@ -1,5 +1,5 @@
 import type { TextFieldProps } from 'litmoss/dist/components/textField/textField.types';
-import type { TextFieldValue } from 'litten-hooks/dist/control/event/littenEvent.types';
+import type { TextFieldValue } from 'litmoss-hooks/dist/control/event/littenEvent.types';
 
 import type {
   FormHelperInfo,

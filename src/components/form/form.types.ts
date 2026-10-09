@@ -1,6 +1,6 @@
 import type { Dispatch, ReactNode, SetStateAction } from 'react';
 
-import type { UserControlProps } from 'litten-hooks/dist/control/userControl/userControl.types';
+import type { UserControlProps } from 'litmoss-hooks/dist/control/userControl/userControl.types';
 
 /**
  * 表单组件属性
