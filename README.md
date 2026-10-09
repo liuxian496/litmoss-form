@@ -36,7 +36,7 @@ npm i litmoss-form
 | `classnames`         | `^2.5.1`   |
 | `cyndi`              | `^1.0.0`   |
 | `exception-boundary` | `^2.0.1`   |
-| `litmoss-hooks`      | `^1.1.0`   |
+| `litmoss-hooks`      | `^3.0.0`   |
 | `lodash`             | `^4.17.21` |
 
 ## 快速开始
