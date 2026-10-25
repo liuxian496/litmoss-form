@@ -134,6 +134,27 @@ export function setValueByPath(
 }
 
 /**
+ * 通过属性路径验证表单项的方法
+ * @param path 表单项的唯一路径（valuePath）
+ * @param formRegister 当前表单的注册器对象
+ * @returns 验证结果，包含帮助信息和路径
+ */
+export function validateField(path: string, formRegister: FormRegister) {
+  const formItemRegister = formRegister[path];
+  if (formItemRegister !== undefined) {
+    const { validate, get } = formItemRegister;
+    const value = get?.();
+    const helpInfo = validate?.(value);
+    return {
+      helpInfo,
+      path,
+    };
+  } else {
+    warn(valuePathNotFoundEntry(path));
+  }
+}
+
+/**
  * 聚焦指定表单项
  * @param path 表单项的唯一路径（valuePath）
  * @param formRegister 当前表单的注册器对象

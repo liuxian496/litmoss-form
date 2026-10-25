@@ -13,6 +13,7 @@ import {
   setHelpTextByPath,
   setValueByPath,
   setValues,
+  validateField,
 } from '../../components/form/formUtil';
 import { type FormStory } from '../nativeForm/nativeFormStory.types';
 
@@ -27,7 +28,7 @@ export const FormUtilBranchTest: FormStory = {
   },
   render: () => <Test />,
   play: async ({ step }) => {
-    const warnSpy = spyOn(console, 'warn').mockImplementation(() => {});
+    const warnSpy = spyOn(console, 'warn').mockImplementation(() => { });
 
     try {
       await step(
@@ -118,12 +119,12 @@ export const FormUtilBranchTest: FormStory = {
             {
               name: {
                 path: 'name',
-                set: () => {},
+                set: () => { },
                 validate: () => 'This is help text.',
               },
               salary: {
                 path: 'salary',
-                set: () => {},
+                set: () => { },
                 validate: () => 'This is help text.',
               },
             }
@@ -168,12 +169,24 @@ export const FormUtilBranchTest: FormStory = {
           const helpInfo = setValueByPath('name', 'Tom', {
             name: {
               path: 'name',
-              set: () => {},
+              set: () => { },
               validate: () => 'This is help text.',
             },
           });
 
           expect(helpInfo).toEqual('This is help text.');
+        }
+      );
+
+      await step(
+        `In "validateField", When formRegister do not have the path, should warn ${valuePathNotFoundEntry('validatePath')}`,
+        async () => {
+          const result = validateField('validatePath', {});
+
+          await expect(result).toBeUndefined();
+          await expect(warnSpy).toHaveBeenCalledWith(
+            `[litten warning]: ${valuePathNotFoundEntry('validatePath')}`
+          );
         }
       );
 
