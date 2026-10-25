@@ -1,4 +1,11 @@
 
+# [5.1.0](https://github.com/liuxian496/litmoss-form/compare/v5.0.1...v5.1.0) (2026-10-25)
+
+
+### Features
+
+* 添加validateField ([459f64c](https://github.com/liuxian496/litmoss-form/commit/459f64ccb5dbc128acc7bb04140022602ddf76eb))
+
 ## [5.0.1](https://github.com/liuxian496/litmoss-form/compare/v5.0.0...v5.0.1) (2026-10-09)
 
 # [5.0.0](https://github.com/liuxian496/litmoss-form/compare/v4.2.0...v5.0.0) (2026-10-09)
