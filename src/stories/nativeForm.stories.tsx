@@ -14,6 +14,7 @@ import { NoAutoFocusTest } from './nativeForm/noAutoFocusStory';
 import { TextFieldTest } from './nativeForm/textFieldStory';
 import { UseHelperInfoBranchTest } from './nativeForm/useHelperInfoBranchStory';
 import { ValidationBranchTest } from './nativeForm/validationBranchStory';
+import { ValidationByPathTest } from './nativeForm/validationByPathStory';
 import { ValidationByStepTest } from './nativeForm/validationByStepStory';
 import { ValidationBasicTest } from './nativeForm/validationStory';
 
@@ -38,6 +39,7 @@ export const Checkbox = CheckboxTest;
 export const DuplicateValuePath = DuplicateValuePathTest;
 export const ValidationBasic = ValidationBasicTest;
 export const ValidationByStep = ValidationByStepTest;
+export const ValidationByPath = ValidationByPathTest;
 export const ValidationBranch = ValidationBranchTest;
 export const FormUtil = FormUtilTest;
 export const FormUtilBranch = FormUtilBranchTest;

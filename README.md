@@ -133,6 +133,7 @@ function Demo() {
 | `setValueByPath(path, value)`   | 设置指定表单项的值                                |
 | `setHelpTextByPath(path, text)` | 设置指定表单项的提示信息                          |
 | `validate({ focusOnError? })`   | 校验表单，返回失败项的 `{ path, helpInfo }` 数组  |
+| `validateField(path)`           | 通过属性路径验证表单项的方法,并返回验证结果       |
 | `focusFieldByPath(path)`        | 聚焦指定表单项                                    |
 
 ### 常量

@@ -21,6 +21,7 @@ import {
   setHelpTextByPath,
   setValueByPath,
   setValues,
+  validateField,
 } from './formUtil';
 
 /**
@@ -77,6 +78,9 @@ export const Form = forwardRef(
             }
           }
           return errorList;
+        },
+        validateField: (path: string) => {
+          return validateField(path, formRegister);
         },
         focusFieldByPath: (path: string) => {
           focusFieldByPath(path, formRegister);

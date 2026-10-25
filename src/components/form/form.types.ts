@@ -266,6 +266,12 @@ export interface FormRef {
    */
   validate: (options?: { focusOnError?: boolean }) => FormItemHelper[];
   /**
+   * 通过属性路径验证表单项的方法
+   * @param path 表单项的值路径
+   * @returns 验证结果，包含帮助信息和路径
+   */
+  validateField: (path: string) => FormItemHelper;
+  /**
    * 通过属性路径聚焦表单项对应控件的方法
    * @param path 表单项的值路径
    * @returns void
