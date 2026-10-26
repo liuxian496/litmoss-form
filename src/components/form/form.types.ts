@@ -261,16 +261,21 @@ export interface FormRef {
   /**
    * 表单验证
    * @param options - 验证选项
-   * @param options.focusOnError - 验证失败时是否自动聚焦到第一个错误表单项（可选，默认为 false）
+   * @param options.focusOnError - 验证失败时是否自动聚焦到第一个错误表单项（可选，默认为 true）
    * @returns 表单验证结果数组，包含每个验证失败表项的帮助信息和路径
    */
   validate: (options?: { focusOnError?: boolean }) => FormItemHelper[];
   /**
    * 通过属性路径验证表单项的方法
    * @param path 表单项的值路径
-   * @returns 验证结果，包含帮助信息和路径
+   * @param options - 验证选项
+   * @param options.focusOnError - 验证失败时是否自动聚焦到第一个错误表单项（可选，默认为 true）
+   * @returns 验证失败时返回包含帮助信息和路径的数组；验证通过或路径不存在时返回空数组
    */
-  validateField: (path: string) => FormItemHelper;
+  validateField: (
+    path: string,
+    options?: { focusOnError?: boolean }
+  ) => FormItemHelper[];
   /**
    * 通过属性路径聚焦表单项对应控件的方法
    * @param path 表单项的值路径

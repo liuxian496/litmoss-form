@@ -28,7 +28,7 @@ export const FormUtilBranchTest: FormStory = {
   },
   render: () => <Test />,
   play: async ({ step }) => {
-    const warnSpy = spyOn(console, 'warn').mockImplementation(() => { });
+    const warnSpy = spyOn(console, 'warn').mockImplementation(() => {});
 
     try {
       await step(
@@ -119,12 +119,12 @@ export const FormUtilBranchTest: FormStory = {
             {
               name: {
                 path: 'name',
-                set: () => { },
+                set: () => {},
                 validate: () => 'This is help text.',
               },
               salary: {
                 path: 'salary',
-                set: () => { },
+                set: () => {},
                 validate: () => 'This is help text.',
               },
             }
@@ -169,7 +169,7 @@ export const FormUtilBranchTest: FormStory = {
           const helpInfo = setValueByPath('name', 'Tom', {
             name: {
               path: 'name',
-              set: () => { },
+              set: () => {},
               validate: () => 'This is help text.',
             },
           });
@@ -183,7 +183,7 @@ export const FormUtilBranchTest: FormStory = {
         async () => {
           const result = validateField('validatePath', {});
 
-          await expect(result).toBeUndefined();
+          await expect(result).toEqual([]);
           await expect(warnSpy).toHaveBeenCalledWith(
             `[litten warning]: ${valuePathNotFoundEntry('validatePath')}`
           );
