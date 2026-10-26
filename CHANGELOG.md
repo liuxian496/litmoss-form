@@ -1,4 +1,11 @@
 
+## [5.1.1](https://github.com/liuxian496/litmoss-form/compare/v5.1.0...v5.1.1) (2026-10-26)
+
+
+### Features
+
+* 支持调用validateField后，如果验证失败自动聚焦 ([8d60f32](https://github.com/liuxian496/litmoss-form/commit/8d60f327638ad75d209174a9df1d0f0731668ec2))
+
 # [5.1.0](https://github.com/liuxian496/litmoss-form/compare/v5.0.1...v5.1.0) (2026-10-25)
 
 

@@ -17,18 +17,22 @@ const Test = () => {
   const [formRef, basicForm] = useForm();
 
   function handleValidateNameButtonClick() {
-    const validationResult = basicForm?.validateField(FormPaths.name);
-    if (validationResult?.helpInfo) return;
+    const helpers = basicForm?.validateField(FormPaths.name);
+    if (helpers && helpers.length > 0) return;
     const values = basicForm?.getValues();
 
     console.log('Form values:', values);
   }
   function handleValidateSalaryButtonClick() {
-    const validationResult = basicForm?.validateField(FormPaths.salary);
-    if (validationResult?.helpInfo) return;
+    const helpers = basicForm?.validateField(FormPaths.salary);
+    if (helpers && helpers.length > 0) return;
     const values = basicForm?.getValues();
 
     console.log('Form values:', values);
+  }
+
+  function handleValidateNotExistButtonClick() {
+    basicForm?.validateField('notExistPath');
   }
 
   function validateSalary(value: unknown): boolean {
@@ -63,6 +67,9 @@ const Test = () => {
       </Form>
       <button onClick={handleValidateNameButtonClick}>Validate Name</button>
       <button onClick={handleValidateSalaryButtonClick}>Validate Salary</button>
+      <button onClick={handleValidateNotExistButtonClick}>
+        Validate Not Exist
+      </button>
     </>
   );
 };
@@ -89,6 +96,7 @@ export const ValidationByPathTest: FormStory = {
           salaryMustBeNumberGreaterThanOneMillion
         );
 
+        await expect(nameInput).toHaveFocus();
         await expect(nameError).toBeInTheDocument();
         await expect(salaryError).not.toBeInTheDocument();
       }
@@ -106,6 +114,7 @@ export const ValidationByPathTest: FormStory = {
         );
 
         await expect(nameError).not.toBeInTheDocument();
+        await expect(salaryInput).toHaveFocus();
         await expect(salaryError).toBeInTheDocument();
       }
     );
@@ -123,6 +132,24 @@ export const ValidationByPathTest: FormStory = {
 
         await expect(nameError).not.toBeInTheDocument();
         await expect(salaryError).not.toBeInTheDocument();
+      }
+    );
+
+    await step(
+      'Click Validate Not Exist button with a path that is not registered, Then no field to be focused and no validation error to be displayed',
+      async () => {
+        const validateNotExistButton = canvas.getByText('Validate Not Exist');
+
+        await userEvent.click(validateNotExistButton);
+
+        await expect(nameInput).not.toHaveFocus();
+        await expect(salaryInput).not.toHaveFocus();
+        await expect(
+          canvas.queryByText('This field is required.')
+        ).not.toBeInTheDocument();
+        await expect(
+          canvas.queryByText(salaryMustBeNumberGreaterThanOneMillion)
+        ).not.toBeInTheDocument();
       }
     );
   },

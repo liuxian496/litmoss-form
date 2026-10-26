@@ -66,21 +66,29 @@ export const Form = forwardRef(
           return setValueByPath(path, value, formRegister);
         },
         validate: (options?: { focusOnError?: boolean }) => {
-          const { focusOnError } = options || {};
+          const { focusOnError = true } = options || {};
 
-          const errorList = validate(formRegister, validationMode);
+          const helperInfoList = validate(formRegister, validationMode);
 
           // 验证失败时，自动将焦点定位至首个错误字段。通常点击类似submit这种按钮时，调用本方法
           if (focusOnError !== false) {
-            if (errorList.length > 0) {
-              const firstError = errorList[0];
+            if (helperInfoList.length > 0) {
+              const firstError = helperInfoList[0];
               focusFieldByPath(firstError.path, formRegister);
             }
           }
-          return errorList;
+          return helperInfoList;
         },
-        validateField: (path: string) => {
-          return validateField(path, formRegister);
+        validateField: (path: string, options?: { focusOnError?: boolean }) => {
+          const { focusOnError = true } = options || {};
+
+          const helpers = validateField(path, formRegister);
+
+          if (focusOnError && helpers.length > 0) {
+            focusFieldByPath(helpers[0].path, formRegister);
+          }
+
+          return helpers;
         },
         focusFieldByPath: (path: string) => {
           focusFieldByPath(path, formRegister);
