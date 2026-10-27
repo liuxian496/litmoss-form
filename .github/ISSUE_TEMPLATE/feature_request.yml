@@ -1,0 +1,39 @@
+name: ✨ 功能请求 (Feature Request)
+description: 建议一个新功能或对现有功能进行改进
+title: "Feature: "
+labels: ["type: feature", "status: needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢你为 litmoss-form 提出建议！请尽可能详细地填写以下内容，这有助于我们评估方案的可行性。
+  - type: textarea
+    id: problem
+    attributes:
+      label: 问题背景 (Problem)
+      description: 这个功能请求是否与某个痛点有关？请描述你正在面临的场景。
+      placeholder: 例如：目前 validate 方法只能校验整个表单，但我需要在点击“下一步”时只校验当前步骤的字段...
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: 建议方案 (Proposed Solution)
+      description: 你期望如何解决这个问题？如果有具体的 API 设计或伪代码，请写在这里。
+      placeholder: 例如：建议在 FormRef 上暴露一个 validateField 方法...
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 替代方案 (Alternatives)
+      description: 你是否考虑过其他替代方案？为什么它们不够好？
+    validations:
+      required: false
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: 确认
+      options:
+        - label: 我已经搜索了现有的 Issues，确认这不是一个重复的请求。
+          required: true
