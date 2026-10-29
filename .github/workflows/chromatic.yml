@@ -14,7 +14,8 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22 # 升级到 22 版本
+          cache: 'npm'     # 开启 npm 缓存，加速后续构建
 
       - name: Install dependencies
         run: npm ci
