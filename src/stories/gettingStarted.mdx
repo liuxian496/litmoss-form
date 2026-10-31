@@ -1,0 +1,130 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="GettingStarted" />
+
+# litmoss-form 快速开始
+
+litmoss-form 是一个基于 React 的轻量表单库，核心理念是将**表单数据的状态管理**与**表单 UI 控制**解耦。
+
+- **跨组件收集表单数据**：表单项通过 `path` 自动注册到 `Form` 上下文，无需逐层传递 props。
+- **一次受控**：表单组件封装时实现一次受控逻辑，页面开发即可免去重复的受控代码。
+- **命令式 API**：通过 `useForm` 暴露 `getValues`、`setValues`、`validate` 等方法。
+- **可扩展的校验体系**：通过 `initLittenForm` 全局注入通用校验断言和默认提示文案，同时支持自定义校验。
+- **两种校验模式**：全部校验（`all`）与分步校验（`step`）。
+- **校验失败自动聚焦**：自动聚焦到第一个出错的表单项。
+- **UI 无关**：不依赖任何 UI 库，任何 UI 库都可以通过封装表单组件接入。
+
+## 1. 在工程入口全局初始化
+
+在应用启动时调用一次 `initLittenForm`，注入通用校验断言与默认提示文案：
+
+```ts
+import { BaseValidationType, initLittenForm } from 'litmoss-form';
+
+export const ValidationType = {
+  ...BaseValidationType,
+  StringRequired: 'stringRequired',
+} as const;
+
+export type ValidationType =
+  (typeof ValidationType)[keyof typeof ValidationType];
+
+initLittenForm<ValidationType, string, unknown>({
+  commonValidationAssert: (value, type) => {
+    switch (type) {
+      case ValidationType.StringRequired:
+        return typeof value === 'string' && value.trim() !== '';
+      default:
+        return true;
+    }
+  },
+  getDefaultHelperInfo: (type) => {
+    switch (type) {
+      case ValidationType.StringRequired:
+        return '该项为必填项';
+      default:
+        return '';
+    }
+  },
+});
+```
+
+## 2. 使用表单
+
+```tsx
+import { Form, useForm } from 'litmoss-form';
+
+function Demo() {
+  const [formRef, form] = useForm();
+
+  function handleSubmit() {
+    const errors = form?.validate({ focusOnError: true }) ?? [];
+    if (errors.length > 0) return;
+
+    console.log(form?.getValues());
+  }
+
+  return (
+    <>
+      <Form ref={formRef}>
+        <MyTextField
+          path="name"
+          validations={[{ type: ValidationType.StringRequired }]}
+        />
+      </Form>
+      <button onClick={handleSubmit}>提交</button>
+    </>
+  );
+}
+```
+
+## 3. 封装表单组件
+
+组合使用 `useHelperInfo` 与 `useFormItemValue`，即可封装一个受控、支持校验提示的表单组件：
+
+```tsx
+import { useRef } from 'react';
+import { useFormItemValue, useHelperInfo } from 'litmoss-form';
+import type { FormItemProps } from 'litmoss-form';
+
+export const MyTextField = ({
+  path,
+  initialValue,
+  validations = [],
+}: FormItemProps<string, ValidationType>) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const [helperText, verifyFormItem, setHelperText] = useHelperInfo<
+    string,
+    ValidationType
+  >(validations);
+
+  const [value, setValue] = useFormItemValue<string>(
+    path,
+    initialValue,
+    verifyFormItem,
+    setHelperText,
+    inputRef
+  );
+
+  return (
+    <div>
+      <input
+        ref={inputRef}
+        value={value ?? ''}
+        onChange={(e) => setValue(e.target.value)}
+        onBlur={() => verifyFormItem(value ?? '')}
+      />
+      <div>{helperText}</div>
+    </div>
+  );
+};
+```
+
+## 注意事项
+
+- `path` 必须在整个表单中唯一。重复的 `path` 属于编码错误，应在开发阶段避免：`Form` 会整体被 `[litten error]` 提示替换，且不会自动恢复。
+- `useFormItemValue` 返回的 setter 只接收新值，**不支持** `setValue(prev => ...)` 这种函数式更新。
+- 通过 `setValueByPath` 设置值后，立即调用 `getValueByPath` 可以读到最新值。
+
+更多细节见 `docs/custom-form-component-guide.md` 与 `docs/integration.md`。
