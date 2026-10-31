@@ -13,7 +13,7 @@ export interface FormProps extends UserControlProps {
    */
   children?: ReactNode;
   /**
-   * 表单验证模式，支持分步验证或全部验证。默认全部验证（暂时只支持全部验证）
+   * 表单验证模式，支持分步验证或全部验证。默认全部验证
    */
   validationMode?: ValidationMode;
 }
@@ -78,9 +78,9 @@ export interface FocusableField {
  */
 export interface FormItemRegister {
   path: string;
-  get?: <V>() => V | undefined;
-  set?: <T>(value: T) => void;
-  validate?: <V>(value: V) => FormHelperInfo;
+  get?: () => unknown;
+  set?: (value: unknown) => void;
+  validate?: (value: unknown) => FormHelperInfo;
   setHelperText?: Dispatch<SetStateAction<FormHelperInfo>>;
   fieldRef?: React.RefObject<FocusableField | null>;
 }
@@ -96,7 +96,7 @@ export interface FormRegister {
 /**
  * 表单上下文属性
  * @property register - 注册表单项
- * @property checkValuePath - 检查指定路径的表单项值
+ * @property checkValuePath - 检查表单项的值路径是否唯一
  * @property uninstall - 卸载指定路径的表单项
  */
 export interface FormContextProps {
@@ -231,7 +231,7 @@ export interface FormRef {
   /**
    * 设置表单数据
    * @param {FormArgs} args 表单项参数数组
-   * @returns void
+   * @returns FormItemHelper[]
    * @example
    * ```ts
    * myForm.setValues([{ path: "name", value: "Tom" }, { path: "age", value: 18 }]);
@@ -248,7 +248,7 @@ export interface FormRef {
    * 通过属性路径设置表单项对应控件的值的方法
    * @param path 表单项的值路径
    * @param value 表单项对应控件的值
-   * @returns void
+   * @returns FormHelperInfo
    */
   setValueByPath: (path: string, value: unknown) => FormHelperInfo;
   /**

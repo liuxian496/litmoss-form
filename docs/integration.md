@@ -158,4 +158,4 @@ Form 支持两种 validationMode：
 - 是否注入 commonValidationAssert
 - 是否注入 getDefaultHelperInfo
 - 是否在提交前调用 validate
-- 是否为每个字段提供唯一 path
+- 是否为每个字段提供唯一 path（重复 path 会导致整个表单被错误提示替换，且不会自动恢复，应在开发阶段避免）
