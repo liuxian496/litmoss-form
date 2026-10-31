@@ -129,7 +129,7 @@ function Demo() {
 | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
 | `getValues()`                            | 获取表单当前全部数据                                                                                                                 |
 | `setValues(args)`                        | 批量设置表单数据，`args` 形如 `[{ path, value }]`                                                                                    |
-| `getValueByPath(path)`                   | 获取指定表单项的值                                                                                                                   |
+| `getValueByPath(path)`                   | 获取指定表单项的值；`setValueByPath` 之后立即调用可读到最新值                                                                        |
 | `setValueByPath(path, value)`            | 设置指定表单项的值                                                                                                                   |
 | `setHelpTextByPath(path, text)`          | 设置指定表单项的提示信息                                                                                                             |
 | `validate({ focusOnError? })`            | 校验表单，返回失败项的 `{ path, helpInfo }` 数组；失败时默认聚焦首个错误项（`focusOnError` 默认 `true`）                             |
@@ -185,7 +185,7 @@ export const MyTextField = ({
         ref={inputRef}
         value={value ?? ''}
         onChange={(e) => setValue(e.target.value)}
-        onBlur={() => verifyFormItem(value)}
+        onBlur={() => verifyFormItem(value ?? '')}
       />
       <div>{helperText}</div>
     </div>
@@ -199,6 +199,7 @@ export const MyTextField = ({
 
 - [接入文档](./docs/integration.md)
 - [自定义表单组件封装指南](./docs/custom-form-component-guide.md)
+- [版本升级指南](./docs/upgrade-guide.md)
 
 ## 本地开发
 

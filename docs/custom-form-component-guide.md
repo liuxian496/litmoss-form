@@ -26,7 +26,7 @@
 为了让职责单一、便于复用，这两部分能力被拆分成了两个独立的 Hook：
 
 | Hook               | 职责                                                 | 源码位置                                                                              |
-|--------------------|------------------------------------------------------|---------------------------------------------------------------------------------------|
+| ------------------ | ---------------------------------------------------- | ------------------------------------------------------------------------------------- |
 | `useFormItemValue` | 管理表单项的值，并向 `FormContext` 注册/卸载该表单项 | [src/components/form/useFormItemValue.ts](../src/components/form/useFormItemValue.ts) |
 | `useHelperInfo`    | 执行校验规则，管理校验提示文本状态                   | [src/components/form/useHelperInfo.ts](../src/components/form/useHelperInfo.ts)       |
 
@@ -38,33 +38,39 @@
 function useFormItemValue<T, V = string>(
   valuePath: string,
   initialValue?: T,
-  onValidate?: (value: V) => FormHelperInfo,
+  onGetErrorMessage?: (value: V, path: string) => FormHelperInfo,
   setHelperText?: Dispatch<SetStateAction<FormHelperInfo>>,
-  fieldRef?: React.RefObject<HTMLElement>
-): [T, Dispatch<SetStateAction<T>>];
+  fieldRef?: React.RefObject<FocusableField | null>
+): [T | undefined, (value: T | undefined) => void];
 ```
 
 参数说明：
 
 - `valuePath`：表单项的唯一路径，用于在表单上下文中标识该字段。
 - `initialValue`：表单项的初始值（注意不是"默认值"，仅用于 `useState` 的初始化）。
-- `onValidate`：可选，通常传入 `useHelperInfo` 返回的 `verifyFormItem` 函数，用于表单容器统一触发校验时调用。
+- `onGetErrorMessage`：可选，通常传入 `useHelperInfo` 返回的 `verifyFormItem` 函数，用于表单容器统一触发校验时调用。
 - `setHelperText`：可选，通常传入 `useHelperInfo` 返回的 `setCurrentHelperText`，用于表单容器在整体校验后回填提示文本。
-- `fieldRef`：可选，控件的 DOM/实例引用，用于校验失败时表单容器自动聚焦该字段。
+- `fieldRef`：可选，控件的 DOM/实例引用（需实现 `focus` 方法，参见 `FocusableField`），用于校验失败时表单容器自动聚焦该字段。
 
-返回值为 `[value, setValue]` 元组，用法与 `useState` 一致。
+返回值为 `[value, setItemValue]` 元组。`setItemValue` 只接收新值，**不支持** `setValue(prev => ...)` 这种函数式更新；调用后会同步更新表单上下文中的值，因此通过 `setValueByPath` 设置后立即调用 `getValueByPath`，可以读到最新值。
 
 > **泛型说明**：`useFormItemValue<T, V = string>` 有两个泛型，`T` 是表单项值类型，`V` 是传给校验函数的值类型（默认 `string`）。多数控件只需传 `T`（如 `useFormItemValue<TextFieldValue>`）；仅当校验函数期望的值类型与 `string` 不同时，才需要显式传第二个泛型。
 
-> **类型陷阱**：内部使用 `useState<T | undefined>(initialValue)`，返回时通过 `as T` 断言。因此若不传 `initialValue`，`value` 在运行时实际为 `undefined`，但静态类型是 `T`。请在使用 `value` 时对空值保持警惕（例如渲染前做兜底）。
+> **空值处理**：`value` 的类型是 `T | undefined`。若不传 `initialValue`，`value` 初始即为 `undefined`。使用 `value` 时需要处理空值（例如渲染前做兜底，或在调用校验函数前断言类型）。
 
 ## 3. `useHelperInfo` 详解
 
 ```ts
-function useHelperInfo<T, V, VT>(
+function useHelperInfo<V, VT>(
   validations: FormItemValidation<VT>[]
-): [T, (value: V) => T | undefined, Dispatch<SetStateAction<T | undefined>>];
+): [
+  FormHelperInfo,
+  (value: V) => FormHelperInfo,
+  Dispatch<SetStateAction<FormHelperInfo>>,
+];
 ```
+
+泛型说明：`V` 是待校验的值类型，`VT` 是校验类型。
 
 参数说明：
 
@@ -84,7 +90,6 @@ function useHelperInfo<T, V, VT>(
 
 ```tsx
 const [currentHelperText, verifyFormItem, setCurrentHelperText] = useHelperInfo<
-  FormHelperInfo,
   string,
   ValidationType
 >(validations);
@@ -115,7 +120,7 @@ const [value, setValue] = useFormItemValue<boolean>(path, initialValue);
 
 关键点：
 
-- 不传入 `onValidate`、`setHelperText`、`fieldRef`，仅完成受控值同步与表单上下文注册。
+- 不传入 `onGetErrorMessage`、`setHelperText`、`fieldRef`，仅完成受控值同步与表单上下文注册。
 - 适用于不需要展示行内校验提示的控件，或校验逻辑由外部统一处理的场景。
 
 ### 4.3 完整示例
@@ -132,7 +137,6 @@ import type {
   TextFieldValue,
 } from 'litmoss-hooks/dist/control/event/littenEvent.types';
 
-import { type FormHelperInfo } from '../../../components/form/form.types';
 import { useFormItemValue } from '../../../components/form/useFormItemValue';
 import { useHelperInfo } from '../../../components/form/useHelperInfo';
 import type { ValidationType } from '../../form/validation';
@@ -151,7 +155,7 @@ export const MyTextField = ({
 
   // 1. 先调用 useHelperInfo，拿到校验相关能力
   const [currentHelperText, verifyFormItem, setCurrentHelperText] =
-    useHelperInfo<FormHelperInfo, string, ValidationType>(validations);
+    useHelperInfo<string, ValidationType>(validations);
 
   // 2. 再调用 useFormItemValue，把校验能力与 ref 交给表单容器
   const [value, setValue] = useFormItemValue<TextFieldValue>(
@@ -208,7 +212,7 @@ export const MyTextField = ({
 
 ## 6. 注意事项
 
-- `path` 必须在整个表单中唯一，`useFormItemValue` 内部会进行校验，重复路径会导致注册冲突。
+- `path` 必须在整个表单中唯一。重复的 `path` 属于编码错误，应在开发阶段避免：`Form` 会整体被 `[litten error]: The valuePath "xxx" is used by other FormControl, Please check your form.` 提示替换，且不会自动恢复。
 - `validations` 数组的顺序决定了校验优先级，第一个不通过的规则会被作为最终提示信息返回。
 - 若需要在校验失败时自动聚焦该字段，务必将字段的 `ref`（需实现 `focus` 方法或为原生 DOM 元素）传给 `useFormItemValue` 的 `fieldRef` 参数。
 - `useHelperInfo` 依赖全局的 `formInjector`（见 [src/components/inject.ts](../src/components/inject.ts)）提供通用校验断言和默认提示信息，使用前需确保已正确注入。
