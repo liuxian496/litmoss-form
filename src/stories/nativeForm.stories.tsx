@@ -2,6 +2,7 @@ import { type Meta } from '@storybook/react-vite';
 
 import { Form } from '../components/form/form';
 
+import { ApplyOnMountTest } from './nativeForm/applyOnMountStory';
 import { CheckboxTest } from './nativeForm/checkboxStory';
 import { CustomFocusTest } from './nativeForm/customFocusStory';
 import { DuplicateValuePathTest } from './nativeForm/duplicateValuePathStory';
@@ -52,3 +53,4 @@ export const Focus = FocusTest;
 export const NoAutoFocus = NoAutoFocusTest;
 export const CustomFocus = CustomFocusTest;
 export const InitialValue = InitialValueTest;
+export const ApplyOnMount = ApplyOnMountTest;

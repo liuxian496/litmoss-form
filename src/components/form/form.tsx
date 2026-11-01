@@ -47,6 +47,7 @@ export const Form = forwardRef(
     const [errorMsg, setErrorMsg] = useState<undefined | string>();
 
     const [context] = useState(() => initContext(formRegister, setErrorMsg));
+    const { pendingValues } = context;
 
     useImperativeHandle(ref, () => {
       return {
@@ -60,10 +61,20 @@ export const Form = forwardRef(
           setHelpTextByPath(path, helpInfo, formRegister);
         },
         setValues: (args: FormArgs) => {
-          return setValues(args, formRegister);
+          return setValues(args, formRegister, pendingValues);
         },
-        setValueByPath: (path: string, value: unknown) => {
-          return setValueByPath(path, value, formRegister);
+        setValueByPath: (
+          path: string,
+          value: unknown,
+          applyOnMount?: boolean
+        ) => {
+          return setValueByPath(
+            path,
+            value,
+            formRegister,
+            pendingValues,
+            applyOnMount
+          );
         },
         validate: (options?: { focusOnError?: boolean }) => {
           const { focusOnError = true } = options || {};
@@ -94,7 +105,7 @@ export const Form = forwardRef(
           focusFieldByPath(path, formRegister);
         },
       };
-    }, [formRegister, validationMode]);
+    }, [formRegister, pendingValues, validationMode]);
 
     return (
       <ExceptionBoundary errorMsg={errorMsg}>

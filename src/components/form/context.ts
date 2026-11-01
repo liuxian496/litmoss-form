@@ -33,6 +33,7 @@ export function initContext(
         ...props,
       };
     },
+    pendingValues: new Map(),
     uninstall: (path: string) => {
       delete formRegister[path];
     },

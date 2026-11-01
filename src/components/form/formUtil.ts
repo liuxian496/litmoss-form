@@ -12,6 +12,7 @@ import type {
   FormItemHelper,
   FormRegister,
   FormValues,
+  PendingValues,
 } from './form.types';
 
 /**
@@ -77,7 +78,11 @@ export function setHelpTextByPath(
  * @param {FormArgs} args 表单项参数数组
  * @param {FormRegister} formRegister 表单注册器
  */
-export function setValues(args: FormArgs, formRegister: FormRegister) {
+export function setValues(
+  args: FormArgs,
+  formRegister: FormRegister,
+  pendingValues: PendingValues = new Map()
+) {
   const helpInfos: FormItemHelper[] = [];
 
   if (!Array.isArray(args)) {
@@ -86,7 +91,7 @@ export function setValues(args: FormArgs, formRegister: FormRegister) {
   }
 
   args.forEach((args) => {
-    const { path, value } = args;
+    const { path, value, applyOnMount } = args;
     const set = formRegister[path]?.set;
     const validate = formRegister[path]?.validate;
     if (set) {
@@ -99,7 +104,12 @@ export function setValues(args: FormArgs, formRegister: FormRegister) {
         });
       }
     } else {
-      warn(setMethodNotFound());
+      // 如果 set 方法不存在，根据 applyOnMount 决定是否将值存入 pendingValues
+      if (applyOnMount === true) {
+        pendingValues.set(path, value);
+      } else {
+        warn(setMethodNotFound());
+      }
     }
   });
 
@@ -116,7 +126,9 @@ export function setValues(args: FormArgs, formRegister: FormRegister) {
 export function setValueByPath(
   path: string,
   value: unknown,
-  formRegister: FormRegister
+  formRegister: FormRegister,
+  pendingValues: PendingValues = new Map(),
+  applyOnMount?: boolean
 ) {
   const formItemRegister = formRegister[path];
   if (formItemRegister !== undefined) {
@@ -128,6 +140,8 @@ export function setValueByPath(
     } else {
       warn(setMethodNotFound());
     }
+  } else if (applyOnMount === true) {
+    pendingValues.set(path, value);
   } else {
     warn(valuePathNotFoundEntry(path));
   }

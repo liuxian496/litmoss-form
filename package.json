@@ -1,7 +1,7 @@
 {
   "name": "litmoss-form",
   "private": false,
-  "version": "5.1.1",
+  "version": "6.0.0",
   "type": "module",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
