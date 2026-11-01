@@ -1,4 +1,16 @@
 
+# [6.0.0](https://github.com/liuxian496/litmoss-form/compare/v5.1.1...v6.0.0) (2026-11-01)
+
+
+### Bug Fixes
+
+* useFormItemValue 的 get 方法存在闭包陷阱，无法读取最新 value ([9a56e7c](https://github.com/liuxian496/litmoss-form/commit/9a56e7c6d8e776f0b67f12466b1eb81998fae1f9))
+
+
+### Features
+
+* setValues和setValueByPath支持在表单项渲染完成后（条件渲染表单项），显示设置的值 ([56b86c4](https://github.com/liuxian496/litmoss-form/commit/56b86c4e5ce2fa4d13c87534855dd6e00f9d8b40))
+
 ## [5.1.1](https://github.com/liuxian496/litmoss-form/compare/v5.1.0...v5.1.1) (2026-10-26)
 
 
