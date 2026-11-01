@@ -1,0 +1,349 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="API Reference" />
+
+# API 参考
+
+本文档列出 litmoss-form 对外暴露的全部 API，均可从包入口直接引入：
+
+```ts
+import {
+  Form,
+  Mounter,
+  useForm,
+  useFormItemValue,
+  useHelperInfo,
+  initLittenForm,
+  BaseValidationType,
+  ValidationMode,
+} from 'litmoss-form';
+
+import type {
+  FormProps,
+  FormRef,
+  FormHelperInfo,
+  FormItemProps,
+  MounterProps,
+} from 'litmoss-form';
+```
+
+> 标注“未单独导出”的类型仅用于说明公开 API 的参数结构，无法从包入口直接引入。
+
+---
+
+## 组件
+
+### Form
+
+表单容器组件，基于 React Context 收集内部表单项，并通过 `ref` 暴露命令式方法（见 [FormRef](#formref)）。
+
+```tsx
+const [formRef, form] = useForm();
+
+<Form ref={formRef} validationMode={ValidationMode.all}>
+  {/* 表单项 */}
+</Form>;
+```
+
+**属性（`FormProps`）**
+
+- `children?: ReactNode`：子组件。
+- `validationMode?: ValidationMode`：校验模式，默认 `ValidationMode.all`，详见 [ValidationMode](#validationmode)。
+- `prefixCls?: string` 及其他 `UserControlProps` 属性：继承自 `litmoss-hooks`，其余属性会透传到外层 `div`。
+
+**说明**
+
+- 渲染结构为一层 `div` 包裹子组件。
+- 表单内出现重复的 `path` 时，`Form` 整体会被 `[litten error]` 提示替换，且不会自动恢复。
+
+### Mounter
+
+在挂载后执行一次回调的辅助组件，不渲染任何内容，常用于在子表单挂载完成后再读写表单数据（如级联表单）。
+
+```tsx
+<Mounter
+  onDidMount={() => form?.setValues([{ path: 'city', value: 'Shanghai' }])}
+/>
+```
+
+**属性（`MounterProps`）**
+
+- `onDidMount: () => void`：组件挂载后调用一次。
+- 其他 `UserControlProps` 属性：继承自 `litmoss-hooks`。
+
+---
+
+## Hooks
+
+### useForm
+
+获取表单 ref 与表单操作对象。
+
+```ts
+function useForm(): [
+  React.MutableRefObject<FormRef | undefined>,
+  FormRef | undefined,
+];
+```
+
+- 第一项：传给 `Form` 的 `ref`。
+- 第二项：`FormRef` 对象。首次渲染时为 `undefined`，组件挂载后才可用，调用时建议使用可选链 `form?.validate()`。
+
+### useFormItemValue
+
+为自定义表单组件实现受控逻辑，并把表单项注册到所在的 `Form`。
+
+```ts
+function useFormItemValue<T, V = string>(
+  valuePath: string,
+  initialValue?: T,
+  onGetErrorMessage?: (value: V, path: string) => FormHelperInfo,
+  setHelperText?: Dispatch<SetStateAction<FormHelperInfo>>,
+  fieldRef?: React.RefObject<FocusableField | null>
+): [T | undefined, (value: T | undefined) => void];
+```
+
+**参数**
+
+- `valuePath`：表单项路径，在同一 `Form` 内必须唯一。
+- `initialValue`：初始值（不是默认值）。
+- `onGetErrorMessage`：校验函数，返回提示信息；返回 `undefined` 表示校验通过。通常传入 `useHelperInfo` 返回的校验函数。
+- `setHelperText`：设置提示信息的 setter，供 `FormRef.setHelpTextByPath` 使用。
+- `fieldRef`：控件引用，需提供 `focus()` 方法，用于校验失败时自动聚焦。
+
+**返回值**
+
+- `[value, setValue]`：当前值与 setter。
+- setter 只接收新值，**不支持** `setValue(prev => ...)` 这种函数式更新。
+
+**FocusableField**（未单独导出）
+
+```ts
+interface FocusableField {
+  focus: () => void;
+}
+```
+
+### useHelperInfo
+
+管理表单项的校验提示信息，并生成校验函数。
+
+```ts
+function useHelperInfo<V, VT>(
+  validations: FormItemValidation<VT>[]
+): [
+  FormHelperInfo,
+  (value: V) => FormHelperInfo,
+  Dispatch<SetStateAction<FormHelperInfo>>,
+];
+```
+
+**返回值**
+
+- 第一项：当前提示信息。
+- 第二项：校验函数，按顺序执行 `validations`，返回第一条失败规则的提示信息，全部通过时返回 `undefined`，同时更新第一项。
+- 第三项：直接设置提示信息的 setter。
+
+**校验规则**
+
+- `type` 为 `BaseValidationType.Customize` 时，使用规则自带的 `validationAssert`；未提供时输出警告并停止校验。
+- 其他 `type` 使用 `initLittenForm` 注入的 `commonValidationAssert`；未注入时输出警告并停止校验。
+- 失败时的提示信息优先取规则中的 `helpInfo`，其次取注入的 `getDefaultHelperInfo(type)`。
+
+**FormItemValidation**（未单独导出）
+
+```ts
+interface FormItemValidation<T> {
+  type: T;
+  helpInfo?: FormHelperInfo;
+  validationAssert?: (value: unknown) => boolean;
+}
+```
+
+---
+
+## 函数
+
+### initLittenForm
+
+全局注入通用能力，应在应用入口调用一次。
+
+```ts
+function initLittenForm<VT, CT, T>(args: FormInjector<VT, CT, T>): void;
+```
+
+**FormInjector**（未单独导出）
+
+```ts
+interface FormInjector<VT = unknown, CT = unknown, T = unknown> {
+  // 通用校验断言，返回 true 表示通过
+  commonValidationAssert?(value: unknown, validationType: VT): boolean;
+  // 校验失败且规则未提供 helpInfo 时使用的默认提示信息
+  getDefaultHelperInfo?(validationType: VT): FormHelperInfo;
+  // 按控件类型获取初始值
+  getInitialValue?(controlType: CT): T;
+}
+```
+
+再次调用会整体覆盖之前注入的三个字段。
+
+---
+
+## 常量
+
+### BaseValidationType
+
+内置校验类型，可与自定义校验类型合并使用。
+
+```ts
+const BaseValidationType = {
+  Customize: 'customize',
+} as const;
+```
+
+- `Customize`：自定义校验，需在规则中提供 `validationAssert`。
+
+```ts
+export const ValidationType = {
+  ...BaseValidationType,
+  StringRequired: 'stringRequired',
+} as const;
+```
+
+### ValidationMode
+
+表单校验模式，用于 `Form` 的 `validationMode` 属性。
+
+```ts
+const ValidationMode = {
+  all: 'all',
+  step: 'step',
+} as const;
+```
+
+- `all`：校验全部表单项，返回所有失败项。
+- `step`：按注册顺序校验，遇到第一个失败项即停止，最多返回一项。
+
+---
+
+## FormRef
+
+`Form` 通过 `ref` 暴露的方法集合，通常通过 `useForm` 获取。
+
+### getValues
+
+```ts
+getValues(): FormValues;
+```
+
+获取全部表单数据，返回以 `path` 为键的对象。
+
+### setValues
+
+```ts
+setValues(args: FormArgs): FormItemHelper[];
+```
+
+批量设置表单项的值，返回设值后校验失败的提示信息数组。
+
+```ts
+form?.setValues([
+  { path: 'name', value: 'Tom' },
+  { path: 'age', value: 18 },
+]);
+```
+
+### getValueByPath
+
+```ts
+getValueByPath(path: string): unknown;
+```
+
+获取指定表单项的值。紧跟在 `setValueByPath` 之后调用也能读到最新值。
+
+### setValueByPath
+
+```ts
+setValueByPath(path: string, value: unknown): FormHelperInfo;
+```
+
+设置指定表单项的值并触发该项校验，返回校验结果，通过时为 `undefined`。
+
+### setHelpTextByPath
+
+```ts
+setHelpTextByPath(path: string, helpText: FormHelperInfo): void;
+```
+
+直接设置指定表单项的提示信息，常用于展示服务端返回的错误。
+
+### validate
+
+```ts
+validate(options?: { focusOnError?: boolean }): FormItemHelper[];
+```
+
+按 `validationMode` 校验表单，返回失败项数组，全部通过时为空数组。`focusOnError` 默认为 `true`，失败时自动聚焦第一个失败项。
+
+### validateField
+
+```ts
+validateField(
+  path: string,
+  options?: { focusOnError?: boolean }
+): FormItemHelper[];
+```
+
+校验单个表单项。失败时返回包含该项的数组，通过或路径不存在时返回空数组。`focusOnError` 默认为 `true`。
+
+### focusFieldByPath
+
+```ts
+focusFieldByPath(path: string): void;
+```
+
+聚焦指定表单项，需要该表单项在 `useFormItemValue` 中传入了 `fieldRef`。
+
+---
+
+## 类型
+
+### FormHelperInfo
+
+```ts
+type FormHelperInfo = string | JSX.Element | undefined;
+```
+
+表单项的提示信息，`undefined` 表示无提示（校验通过）。
+
+### FormItemProps
+
+自定义表单组件的推荐属性类型。
+
+```ts
+interface FormItemProps<T, V> {
+  path: string;
+  initialValue?: T;
+  validations?: FormItemValidation<V>[];
+}
+```
+
+### 其他相关类型（未单独导出）
+
+```ts
+interface FormValues {
+  [index: string]: unknown;
+}
+
+interface FormItemArgs {
+  path: string;
+  value: unknown;
+}
+
+type FormArgs = FormItemArgs[];
+
+interface FormItemHelper {
+  path: string;
+  helpInfo?: FormHelperInfo;
+}
+```
