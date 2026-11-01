@@ -58,6 +58,12 @@ export interface FormValues {
 }
 
 /**
+ * 表单项的待处理值集合
+ * key 为表单项的值路径，value 为对应的待处理值
+ */
+export type PendingValues = Map<string, unknown>;
+
+/**
  * 可聚焦的表单控件接口
  * 任何实现了该接口的表单控件都应提供一个 focus 方法，用于将焦点设置到该控件上
  * 这对于表单验证失败时自动聚焦非常有用
@@ -112,6 +118,10 @@ export interface FormContextProps {
    */
   checkValuePath: (path: string) => void;
   /**
+   * 未挂载表单项的待应用值，表单项挂载时取用并删除
+   */
+  pendingValues: PendingValues;
+  /**
    * 卸载表单项
    * @param path - 要卸载的表单项的值路径
    * @returns void
@@ -147,19 +157,25 @@ export interface FormItemProps<T, V> {
 
 /**
  * 表单项参数
- * 用于设置表单项的值
- * 包含属性路径和对应的值
- * @property path - 表单项的唯一路径
- * @property value - 表单项的值
  */
 export interface FormItemArgs {
+  /**
+   * 表单项的唯一路径
+   */
   path: string;
+  /**
+   * 表单项的值
+   */
   value: unknown;
+  /**
+   * 目标表单项尚未挂载（如条件渲染）时设为 true：保存value对应的值，待其挂载时应用该值
+   */
+  applyOnMount?: boolean;
 }
 
 /**
  * 表单参数
- * 包含一个数组，每个元素是一个[表单项参数](#FormItemArgs)
+ * 包含一个数组，每个元素是一个{@link FormItemArgs | 表单项参数}
  */
 export type FormArgs = FormItemArgs[];
 
@@ -248,9 +264,14 @@ export interface FormRef {
    * 通过属性路径设置表单项对应控件的值的方法
    * @param path 表单项的值路径
    * @param value 表单项对应控件的值
-   * @returns FormHelperInfo
+   * @param applyOnMount 目标表单项尚未挂载时设为 true：保存该值，待其挂载时应用
+   * @returns void
    */
-  setValueByPath: (path: string, value: unknown) => FormHelperInfo;
+  setValueByPath: (
+    path: string,
+    value: unknown,
+    applyOnMount?: boolean
+  ) => FormHelperInfo;
   /**
    * 通过属性路径设置表单项对应控件的帮助信息的方法
    * @param path 表单项的值路径
