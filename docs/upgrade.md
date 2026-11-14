@@ -2,22 +2,24 @@
 
 本文档汇总 `litmoss-form`（原 `litten-form`）各版本之间的**破坏性变更**和**行为变化**，并给出迁移步骤。
 
-> 跨多个大版本升级时，请按顺序逐段阅读（例如 2.x → 5.x 需依次参考 3.0、4.0、5.0 章节）。
+> 跨多个大版本升级时，请按顺序逐段阅读（例如 2.x → 6.x 需依次参考 3.0、4.0、5.0、6.0 章节）。
 > 仅涉及构建、CI、Storybook 的改动不影响使用方，本文不列出。
 
 ## 总览
 
-| 升级区间      | 类型     | 主要变化                                                                                                   |
-| ------------- | -------- | ---------------------------------------------------------------------------------------------------------- |
-| 1.x → 2.0.0   | 破坏性   | `Form` 改为 `ref` 方式；`useForm` 返回元组；`setValues` 参数改为数组；`clear` 改为置空；废弃 `FormControl` |
-| 2.0.0 → 2.1.0 | 破坏性   | `FormControl` 实现被移除；`useFormItemValue` 泛型调整                                                      |
-| 2.x → 3.0.0   | 破坏性   | `injectVerifyFormItem` 替换为 `initLittenForm`；`ValidationMode` 由 enum 改为常量对象                      |
-| 3.x → 4.0.0   | 破坏性   | 删除 `FormItemValue`、`FormRef.clear`；`useHelperInfo` / `useFormItemValue` 签名调整                       |
-| 4.0.0 → 4.1.0 | 行为变化 | `validate()` 失败时默认自动聚焦首个错误项                                                                  |
-| 4.x → 5.0.0   | 破坏性   | 包名由 `litten-form` 改为 `litmoss-form`                                                                   |
-| 5.0.0 → 5.0.1 | 依赖变化 | peer 依赖 `litten-hooks` 替换为 `litmoss-hooks@^3.0.0`                                                     |
-| 5.0.1 → 5.1.0 | 依赖变化 | 新增 peer 依赖 `number-precision@^1.6.0`；新增 `validateField`                                             |
-| 5.1.0 → 5.1.1 | 行为变化 | `validateField` 失败时默认自动聚焦                                                                         |
+| 升级区间      | 类型     | 主要变化                                                                                         |
+| ------------- | -------- | ------------------------------------------------------------------------------------------------ |
+| 1.x → 2.0.0   | 破坏性   | `Form` 改为 `ref` 方式；`useForm` 返回元组；`setValues` 参数改为数组；废弃 `FormControl`         |
+| 2.0.0 → 2.1.0 | 破坏性   | `FormControl` 实现被移除；`useFormItemValue` 泛型调整                                            |
+| 2.x → 3.0.0   | 破坏性   | `injectVerifyFormItem` 替换为 `initLittenForm`；`ValidationMode` 由 enum 改为常量对象            |
+| 3.x → 4.0.0   | 破坏性   | 删除 `FormItemValue`、`FormRef.clear`；`useHelperInfo` / `useFormItemValue` 签名调整             |
+| 4.0.0 → 4.1.0 | 行为变化 | `validate()` 失败时默认自动聚焦首个错误项                                                        |
+| 4.x → 5.0.0   | 破坏性   | 包名由 `litten-form` 改为 `litmoss-form`                                                         |
+| 5.0.0 → 5.0.1 | 依赖变化 | peer 依赖 `litten-hooks` 替换为 `litmoss-hooks@^3.0.0`                                           |
+| 5.0.1 → 5.1.0 | 依赖变化 | 新增 peer 依赖 `number-precision@^1.6.0`；新增 `validateField`                                   |
+| 5.1.0 → 5.1.1 | 行为变化 | `validateField` 失败时默认自动聚焦                                                               |
+| 5.1.1 → 6.0.0 | 破坏性   | `useFormItemValue` 的 setter 不再支持函数式更新，`value` 类型含 `undefined`；新增 `applyOnMount` |
+| 6.0.0 → 6.1.0 | 行为变化 | `applyOnMount` 暂存值在挂载时触发校验；`Form` 的 `ref` 类型收紧为 `FormRef`                      |
 
 ---
 
@@ -54,7 +56,7 @@ myForm?.setValues([
 ]);
 ```
 
-1.x 中未出现在对象里的字段会被设置为 `undefined`；2.0 起只设置数组中列出的字段。
+1.x 中未出现在对象里的字段会被设置为 `undefined`；2.0 起只设置数组中列出的字段，并会对这些字段立即执行校验、更新提示信息。
 
 ### 3. `FormControl` 被废弃
 
@@ -307,6 +309,74 @@ myForm?.validateField('name', { focusOnError: false });
 
 ---
 
+## 5.1.1 → 6.0.0
+
+### 1. `useFormItemValue` 返回的 setter 不再支持函数式更新
+
+setter 的类型由 `Dispatch<SetStateAction<T>>` 改为 `(value: T | undefined) => void`，只接收新值。传入函数不会被执行，而是被当作值保存到表单项中。
+
+```ts
+// 5.x
+setValue((prev) => !prev);
+
+// 6.0+
+setValue(!value);
+```
+
+### 2. `useFormItemValue` 返回的 `value` 类型包含 `undefined`
+
+返回值类型由 `[T, Dispatch<SetStateAction<T>>]` 改为 `[T | undefined, (value: T | undefined) => void]`。运行时行为不变（未传 `initialValue` 时本来就是 `undefined`），但类型检查会要求在使用处处理空值：
+
+```tsx
+<input value={value ?? ''} onBlur={() => verifyFormItem(value ?? '')} />
+```
+
+### 3. 修复：设值后可立即读到最新值
+
+5.x 中表单项的 `get` 存在闭包问题，在 `setValueByPath` / `setValues` 之后同步调用 `getValueByPath`、`getValues`、`validate`、`validateField`，可能读到旧值。6.0 起可以读到最新值；业务中为规避该问题而加的延迟读取（如 `setTimeout`）可以移除。
+
+### 4. 新增 `applyOnMount`（非破坏）
+
+`setValues` 的参数项与 `setValueByPath` 新增可选的 `applyOnMount`，用于给尚未挂载（如条件渲染）的表单项预设值：
+
+```ts
+myForm?.setValueByPath('email', 'jerry@example.com', true);
+myForm?.setValues([{ path: 'role', value: 'Tom', applyOnMount: true }]);
+```
+
+- 目标表单项已挂载时，该参数不起作用，直接设值并校验。
+- 目标表单项未挂载时，值被暂存，不输出警告、不触发校验（`setValueByPath` 返回 `undefined`，`setValues` 的返回结果不包含该项）。
+- 表单项挂载时取用暂存值（优先于 `initialValue`），不触发校验（6.1.0 起会触发，见下文）；暂存值用后即删除，之后再次卸载、挂载会使用 `initialValue`。
+- 暂存期间 `getValues`、`getValueByPath` 读不到该值；同一 `path` 多次暂存，以最后一次为准。
+
+以往借助 `Mounter` 在子表单挂载后再设值的场景，可以改用 `applyOnMount`。
+
+---
+
+## 6.0.0 → 6.1.0
+
+### 1. `applyOnMount` 暂存值在挂载时触发校验（行为变化）
+
+6.0.0 中，表单项挂载时取用暂存值但不校验；6.1.0 起会以该值触发一次校验并显示提示信息（不自动聚焦，校验结果不会返回给调用方）。暂存值不满足校验规则时，表单项挂载后会立即显示错误提示。
+
+### 2. `Form` 的 `ref` 类型收紧为 `FormRef`（类型变化）
+
+`Form` 的 `ref` 类型由 `unknown` 改为 `FormRef | undefined`，运行时行为不变。通过 `useForm()` 或 `useRef<FormRef>()` 传入 `ref` 的代码不受影响；传入其他类型的 `ref` 会出现类型错误：
+
+```tsx
+// 6.1.0 起类型报错
+const divRef = useRef<HTMLDivElement>(null);
+<Form ref={divRef} />;
+
+// 正确写法
+const [formRef, form] = useForm();
+<Form ref={formRef} />;
+```
+
+此外，回调 `ref` 的参数类型由 `unknown` 变为 `FormRef | undefined | null`，`ElementRef<typeof Form>` 由 `unknown` 变为 `FormRef | undefined`。
+
+---
+
 ## 升级检查清单
 
 - [ ] `package.json` 中依赖名为 `litmoss-form`，代码中没有残留的 `litten-form` 导入。
@@ -314,8 +384,11 @@ myForm?.validateField('name', { focusOnError: false });
 - [ ] 代码中没有残留的 `litten-hooks` 引用。
 - [ ] 已用 `initLittenForm` 替换 `injectVerifyFormItem`，并在应用入口调用一次。
 - [ ] `Form` 使用 `ref={ref}`，`useForm()` 按 `[ref, myForm]` 解构。
+- [ ] 传给 `Form` 的 `ref` 类型为 `FormRef`（推荐使用 `useForm()` 返回的 `ref`）。
 - [ ] `setValues` 参数为 `[{ path, value }]` 数组。
 - [ ] 不再使用 `FormControl`、`FormRef.clear()`、`FormItemValue`。
 - [ ] `useHelperInfo` 只传两个泛型，`verifyFormItem` 调用时传入 `path`。
+- [ ] 没有对 `useFormItemValue` 返回的 setter 使用函数式更新（`setValue(prev => ...)`）。
+- [ ] 使用 `useFormItemValue` 返回的 `value` 时已处理 `undefined`。
 - [ ] 需要自动聚焦的表单项已向 `useFormItemValue` 传入 `fieldRef`；不需要自动聚焦的调用已显式传入 `{ focusOnError: false }`。
 - [ ] 运行类型检查与测试，确认无报错。

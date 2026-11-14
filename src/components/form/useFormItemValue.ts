@@ -14,15 +14,16 @@ import type { FocusableField, FormHelperInfo } from './form.types';
 /**
  *  提供一个自定义hook, 用来实现表单项的受控逻辑
  *
- * @template T - 表单项值的类型，默认FormItemValue
+ * @template T - 表单项值的类型
  * @template V - 传递给校验函数的值类型，默认string
  *
  * @param valuePath - 唯一标识表单项的路径
- * @param initialValue - 表单项的初始值
+ * @param initialValue - 表单项的初始值；挂载时若存在 applyOnMount 暂存值，以暂存值为准
  * @param onGetErrorMessage - 可选，校验值并返回错误信息或 JSX 元素的函数
  * @param setHelperText - 可选，用于设置校验提示文本的 setter
+ * @param fieldRef - 可选，控件引用，校验失败时用于自动聚焦
  *
- * @returns 包含当前值和用于更新值的 setter 的元组
+ * @returns 包含当前值和 setter 的元组；setter 只接收新值，不支持函数式更新
  */
 export function useFormItemValue<T, V = string>(
   valuePath: string,
@@ -78,7 +79,9 @@ export function useFormItemValue<T, V = string>(
      * 只有在根据条件渲染，延迟挂载的情况下，才会使用待处理值初始化表单项
      */
     if (pendingValues?.has(valuePath)) {
-      setItemValue(pendingValues.get(valuePath) as T | undefined);
+      const pendingValue = pendingValues.get(valuePath);
+      setItemValue(pendingValue as T | undefined);
+      onGetErrorMessage?.(pendingValue as V, valuePath);
       // 用完即删
       pendingValues.delete(valuePath);
     }

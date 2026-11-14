@@ -5,7 +5,7 @@ import type { UserControlProps } from 'litmoss-hooks/dist/control/userControl/us
 /**
  * 表单组件属性
  * @property children - 表单组件的子组件
- * @property {ValidationMode} validationMode - 表单验证模式，支持分步验证或全部验证。默认全部验证（暂时只支持全部验证）
+ * @property {ValidationMode} validationMode - 表单验证模式，支持分步验证或全部验证。默认全部验证
  */
 export interface FormProps extends UserControlProps {
   /**
@@ -103,6 +103,7 @@ export interface FormRegister {
  * 表单上下文属性
  * @property register - 注册表单项
  * @property checkValuePath - 检查表单项的值路径是否唯一
+ * @property pendingValues - 未挂载表单项的待应用值
  * @property uninstall - 卸载指定路径的表单项
  */
 export interface FormContextProps {
@@ -235,8 +236,11 @@ export interface FormItemHelper {
  * @property getValues - 获取表单当前数据的方法，返回一个包含所有表单项数据的对象
  * @property setValues - 设置表单数据的方法，接受一个包含表单项路径和值的数组作为参数
  * @property getValueByPath - 通过属性路径获取表单项对应控件的值的方法，接受一个字符串类型的路径作为参数，返回对应的值
- * @property setValueByPath - 通过属性路径设置表单项对应控件的值的方法，接受一个字符串类型的路径和一个值作为参数
+ * @property setValueByPath - 通过属性路径设置表单项对应控件的值的方法，接受路径、值和可选的 applyOnMount 作为参数
  * @property setHelpTextByPath - 通过属性路径设置表单项的帮助信息的方法，接受一个字符串类型的路径和一个错误消息（字符串或JSX元素）作为参数
+ * @property validate - 按验证模式验证表单的方法
+ * @property validateField - 通过属性路径验证单个表单项的方法
+ * @property focusFieldByPath - 通过属性路径聚焦表单项的方法
  */
 export interface FormRef {
   /**
@@ -265,7 +269,7 @@ export interface FormRef {
    * @param path 表单项的值路径
    * @param value 表单项对应控件的值
    * @param applyOnMount 目标表单项尚未挂载时设为 true：保存该值，待其挂载时应用
-   * @returns void
+   * @returns 校验结果；校验通过、值被暂存或路径不存在时为 undefined
    */
   setValueByPath: (
     path: string,

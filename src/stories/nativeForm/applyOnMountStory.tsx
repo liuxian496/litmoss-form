@@ -2,13 +2,15 @@ import { useState } from 'react';
 
 import { expect, spyOn, userEvent, within } from 'storybook/test';
 
-import { FormPaths } from '../../pockets/form/form.types';
+import { FormPaths, ValidationType } from '../../pockets/form';
 import { NativeTextField } from '../../pockets/nativeForm/nativeTextField';
 
 import { valuePathNotFoundEntry } from '../../components/form/entries';
 import { Form } from '../../components/form/form';
 import { useForm } from '../../components/form/useForm';
 import { type FormStory } from '../nativeForm/nativeFormStory.types';
+
+const emailMustContainAt = 'Email must contain @.';
 
 // eslint-disable-next-line react-refresh/only-export-components
 const Test = () => {
@@ -30,6 +32,10 @@ const Test = () => {
     myForm?.setValueByPath(FormPaths.email, 'tom@example.com');
   }
 
+  function handlePresetInvalidEmailClick() {
+    myForm?.setValueByPath(FormPaths.email, 'invalid-email', true);
+  }
+
   return (
     <div>
       <label>
@@ -49,6 +55,13 @@ const Test = () => {
               label="Email:"
               path={FormPaths.email}
               initialValue=""
+              validations={[
+                {
+                  type: ValidationType.Customize,
+                  validationAssert: (value) => String(value).includes('@'),
+                  helpInfo: emailMustContainAt,
+                },
+              ]}
             />
             <NativeTextField
               data-testid="roleTextField"
@@ -63,6 +76,9 @@ const Test = () => {
       <button onClick={handlePresetByValuesClick}>Preset By Values</button>
       <button onClick={handleSetWithoutApplyOnMountClick}>
         Set Without ApplyOnMount
+      </button>
+      <button onClick={handlePresetInvalidEmailClick}>
+        Preset Invalid Email
       </button>
     </div>
   );
@@ -87,6 +103,9 @@ export const ApplyOnMountTest: FormStory = {
       });
       const setWithoutApplyOnMountButton = await canvas.findByRole('button', {
         name: 'Set Without ApplyOnMount',
+      });
+      const presetInvalidEmailButton = await canvas.findByRole('button', {
+        name: 'Preset Invalid Email',
       });
 
       await step('Fields are not rendered initially', async () => {
@@ -115,6 +134,7 @@ export const ApplyOnMountTest: FormStory = {
           await expect(await canvas.findByTestId('roleTextField')).toHaveValue(
             'Tom'
           );
+          await expect(canvas.queryByText(emailMustContainAt)).toBeNull();
         }
       );
 
@@ -148,6 +168,22 @@ export const ApplyOnMountTest: FormStory = {
           await expect(await canvas.findByTestId('emailTextField')).toHaveValue(
             ''
           );
+        }
+      );
+
+      await step(
+        'Hide fields, Preset invalid email with applyOnMount, Then show fields, Should validate on mount without focusing',
+        async () => {
+          await userEvent.click(showFieldsCheckbox);
+          await userEvent.click(presetInvalidEmailButton);
+          await userEvent.click(showFieldsCheckbox);
+
+          const emailTextField = await canvas.findByTestId('emailTextField');
+          await expect(emailTextField).toHaveValue('invalid-email');
+          await expect(
+            await canvas.findByText(emailMustContainAt)
+          ).toBeInTheDocument();
+          await expect(emailTextField).not.toHaveFocus();
         }
       );
     } finally {

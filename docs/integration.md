@@ -51,7 +51,7 @@ initLittenForm 接收 FormInjector：
 参考实现：
 
 ```ts
-import { BaseValidationType } from 'litmoss-form/dist/components/form/formBase';
+import { BaseValidationType } from 'litmoss-form';
 
 export const ValidationType = {
   ...BaseValidationType,

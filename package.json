@@ -1,7 +1,7 @@
 {
   "name": "litmoss-form",
   "private": false,
-  "version": "6.0.0",
+  "version": "6.0.1",
   "type": "module",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -15,6 +15,7 @@
     "component",
     "form"
   ],
+  "license": "Apache-2.0",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

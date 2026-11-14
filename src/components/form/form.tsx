@@ -11,6 +11,7 @@ import {
   type FormArgs,
   type FormHelperInfo,
   type FormProps,
+  type FormRef,
   type FormRegister,
 } from './form.types';
 import { getVisualStates } from './formBase';
@@ -25,21 +26,18 @@ import {
 } from './formUtil';
 
 /**
- * Form 是一个 React 组件，提供基于React Context的表单管理系统
- * 通过 `ref` 暴露命令式方法，用于操作表单状态，如清空、获取、设置和校验表单值。
+ * 基于 React Context 的表单容器，通过 `ref` 暴露 {@link FormRef} 命令式方法。
  *
- * @param {FormProps} props - 表单组件的属性
- * @param {React.Ref<FormRef>} ref - 用于访问命令式表单方法的 ref
- * @returns {JSX.Element} 渲染后的表单组件
+ * @example
+ * ```tsx
+ * const [formRef, form] = useForm();
+ * <Form ref={formRef}>...</Form>
+ * form?.validate();
+ * ```
  */
-export const Form = forwardRef(
+export const Form = forwardRef<FormRef | undefined, FormProps>(
   (
-    {
-      children,
-      prefixCls,
-      validationMode = ValidationMode.all,
-      ...props
-    }: FormProps,
+    { children, prefixCls, validationMode = ValidationMode.all, ...props },
     ref
   ) => {
     const [formRegister] = useState<FormRegister>({});
@@ -81,7 +79,7 @@ export const Form = forwardRef(
 
           const helperInfoList = validate(formRegister, validationMode);
 
-          // 验证失败时，自动将焦点定位至首个错误字段。通常点击类似submit这种按钮时，调用本方法
+          // 验证失败时聚焦首个错误字段
           if (focusOnError !== false) {
             if (helperInfoList.length > 0) {
               const firstError = helperInfoList[0];
