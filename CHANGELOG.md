@@ -1,4 +1,11 @@
 
+## [6.0.1](https://github.com/liuxian496/litmoss-form/compare/v6.0.0...v6.0.1) (2026-11-14)
+
+
+### Bug Fixes
+
+* 修复表单渲染完成后应用pending value没有触发验证的问题 ([ee538b6](https://github.com/liuxian496/litmoss-form/commit/ee538b68ffd25f9c7fb10a2ab5c2332a9a9fc986))
+
 # [6.0.0](https://github.com/liuxian496/litmoss-form/compare/v5.1.1...v6.0.0) (2026-11-01)
 
 
