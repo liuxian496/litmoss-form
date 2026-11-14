@@ -15,6 +15,7 @@
     "component",
     "form"
   ],
+  "license": "Apache-2.0",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
