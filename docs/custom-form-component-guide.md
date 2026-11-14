@@ -47,9 +47,9 @@ function useFormItemValue<T, V = string>(
 参数说明：
 
 - `valuePath`：表单项的唯一路径，用于在表单上下文中标识该字段。
-- `initialValue`：表单项的初始值（注意不是"默认值"，仅用于 `useState` 的初始化）。
-- `onGetErrorMessage`：可选，通常传入 `useHelperInfo` 返回的 `verifyFormItem` 函数，用于表单容器统一触发校验时调用。
-- `setHelperText`：可选，通常传入 `useHelperInfo` 返回的 `setCurrentHelperText`，用于表单容器在整体校验后回填提示文本。
+- `initialValue`：表单项的初始值（注意不是"默认值"，仅用于 `useState` 的初始化）。若挂载时所在 `Form` 中存在该 `path` 的暂存值（通过 `setValueByPath` / `setValues` 的 `applyOnMount` 预设），会在挂载后用暂存值替换，并通过 `onGetErrorMessage` 以该值触发一次校验（不自动聚焦）。
+- `onGetErrorMessage`：可选，通常传入 `useHelperInfo` 返回的 `verifyFormItem` 函数，用于表单容器统一触发校验时调用（`verifyFormItem` 会同时更新提示文本）。
+- `setHelperText`：可选，通常传入 `useHelperInfo` 返回的 `setCurrentHelperText`，供表单容器的 `setHelpTextByPath` 直接设置提示文本（如展示服务端返回的错误）。
 - `fieldRef`：可选，控件的 DOM/实例引用（需实现 `focus` 方法，参见 `FocusableField`），用于校验失败时表单容器自动聚焦该字段。
 
 返回值为 `[value, setItemValue]` 元组。`setItemValue` 只接收新值，**不支持** `setValue(prev => ...)` 这种函数式更新；调用后会同步更新表单上下文中的值，因此通过 `setValueByPath` 设置后立即调用 `getValueByPath`，可以读到最新值。
@@ -80,7 +80,7 @@ function useHelperInfo<V, VT>(
 
 1. `currentHelperText`：当前校验提示文本状态。
 2. `verifyFormItem(value)`：执行校验的函数，会遍历 `validations`，依次尝试匹配失败的规则并返回对应提示信息，同时更新 `currentHelperText` 状态。
-3. `setCurrentHelperText`：直接设置提示文本状态的 setter（通常透传给 `useFormItemValue` 的 `setHelperText` 参数，供表单容器统一触发校验后回填）。
+3. `setCurrentHelperText`：直接设置提示文本状态的 setter（通常透传给 `useFormItemValue` 的 `setHelperText` 参数，供表单容器的 `setHelpTextByPath` 使用）。
 
 ## 4. 两种封装模式
 
@@ -98,7 +98,7 @@ const [value, setValue] = useFormItemValue<TextFieldValue>(
   path,
   initialValue,
   verifyFormItem, // 供表单容器统一触发校验
-  setCurrentHelperText, // 供表单容器回填提示文本
+  setCurrentHelperText, // 供表单容器通过 setHelpTextByPath 设置提示文本
   inputRef // 供表单容器在校验失败时聚焦
 );
 ```
@@ -217,3 +217,4 @@ export const MyTextField = ({
 - 若需要在校验失败时自动聚焦该字段，务必将字段的 `ref`（需实现 `focus` 方法或为原生 DOM 元素）传给 `useFormItemValue` 的 `fieldRef` 参数。
 - `useHelperInfo` 依赖全局的 `formInjector`（见 [src/components/inject.ts](../src/components/inject.ts)）提供通用校验断言和默认提示信息，使用前需确保已正确注入。
 - 组件卸载时，`useFormItemValue` 会自动调用 `uninstall` 清理表单上下文中的注册信息，无需手动处理。
+- 挂载时会自动取用并删除所在 `Form` 中该 `path` 的暂存值（`applyOnMount`），封装组件时无需额外处理。

@@ -54,11 +54,12 @@ const [formRef, form] = useForm();
 **说明**
 
 - 渲染结构为一层 `div` 包裹子组件。
+- `ref` 类型为 `FormRef | undefined`，推荐使用 `useForm()` 返回的 `ref`。
 - 表单内出现重复的 `path` 时，`Form` 整体会被 `[litten error]` 提示替换，且不会自动恢复。
 
 ### Mounter
 
-在挂载后执行一次回调的辅助组件，不渲染任何内容，常用于在子表单挂载完成后再读写表单数据（如级联表单）。
+在挂载后执行一次回调的辅助组件，不渲染任何内容，常用于在子表单挂载完成后再读写表单数据（如级联表单）。仅需为未挂载的表单项预设值时，也可以使用 [applyOnMount](#applyonmount)。
 
 ```tsx
 <Mounter
@@ -106,7 +107,7 @@ function useFormItemValue<T, V = string>(
 **参数**
 
 - `valuePath`：表单项路径，在同一 `Form` 内必须唯一。
-- `initialValue`：初始值（不是默认值）。
+- `initialValue`：初始值（不是默认值）。若挂载时 `Form` 中存在该路径的暂存值（见 [applyOnMount](#applyonmount)），以暂存值为准。
 - `onGetErrorMessage`：校验函数，返回提示信息；返回 `undefined` 表示校验通过。通常传入 `useHelperInfo` 返回的校验函数。
 - `setHelperText`：设置提示信息的 setter，供 `FormRef.setHelpTextByPath` 使用。
 - `fieldRef`：控件引用，需提供 `focus()` 方法，用于校验失败时自动聚焦。
@@ -244,12 +245,13 @@ getValues(): FormValues;
 setValues(args: FormArgs): FormItemHelper[];
 ```
 
-批量设置表单项的值，返回设值后校验失败的提示信息数组。
+批量设置表单项的值，返回设值后校验失败的提示信息数组。参数项可设置 `applyOnMount: true`，为尚未挂载的表单项预设值，见 [applyOnMount](#applyonmount)。
 
 ```ts
 form?.setValues([
   { path: 'name', value: 'Tom' },
   { path: 'age', value: 18 },
+  { path: 'role', value: 'admin', applyOnMount: true },
 ]);
 ```
 
@@ -264,10 +266,27 @@ getValueByPath(path: string): unknown;
 ### setValueByPath
 
 ```ts
-setValueByPath(path: string, value: unknown): FormHelperInfo;
+setValueByPath(
+  path: string,
+  value: unknown,
+  applyOnMount?: boolean
+): FormHelperInfo;
 ```
 
-设置指定表单项的值并触发该项校验，返回校验结果，通过时为 `undefined`。
+设置指定表单项的值并触发该项校验，返回校验结果，通过时为 `undefined`。`applyOnMount` 为 `true` 且表单项未挂载时，暂存该值并返回 `undefined`。
+
+```ts
+form?.setValueByPath('email', 'jerry@example.com', true);
+```
+
+#### applyOnMount
+
+用于给尚未挂载（如条件渲染）的表单项预设值，`setValues` 与 `setValueByPath` 行为一致：
+
+- 目标表单项已挂载时，该参数不起作用，直接设值并校验。
+- 目标表单项未挂载时，值被暂存，不输出警告、不触发校验；未设置 `applyOnMount` 时则输出警告并忽略该值。
+- 表单项挂载时取用暂存值（优先于 `initialValue`），并以该值触发一次校验以显示提示信息（不自动聚焦，校验结果不会返回给调用方）；暂存值用后即删除，之后再次卸载、挂载会使用 `initialValue`。
+- 暂存期间 `getValues`、`getValueByPath` 读不到该值；同一 `path` 多次暂存，以最后一次为准。
 
 ### setHelpTextByPath
 
@@ -338,6 +357,8 @@ interface FormValues {
 interface FormItemArgs {
   path: string;
   value: unknown;
+  // 目标表单项未挂载时暂存该值，待其挂载时应用
+  applyOnMount?: boolean;
 }
 
 type FormArgs = FormItemArgs[];

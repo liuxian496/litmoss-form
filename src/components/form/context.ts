@@ -20,7 +20,7 @@ export const FormContext = createContext<FormContextProps | undefined>(
  *
  * @param formRegister - 用于存储表单项注册信息的对象，以 valuePath 作为键
  * @param setErrorMsg - 用于更新错误信息的 React 状态设置函数
- * @returns {FormContextProps} 返回包含注册、检查和卸载表单项方法的表单上下文
+ * @returns {FormContextProps} 返回包含注册、检查、卸载表单项方法及待应用值集合的表单上下文
  */
 export function initContext(
   formRegister: FormRegister,

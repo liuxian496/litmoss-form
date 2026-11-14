@@ -126,5 +126,6 @@ export const MyTextField = ({
 - `path` 必须在整个表单中唯一。重复的 `path` 属于编码错误，应在开发阶段避免：`Form` 会整体被 `[litten error]` 提示替换，且不会自动恢复。
 - `useFormItemValue` 返回的 setter 只接收新值，**不支持** `setValue(prev => ...)` 这种函数式更新。
 - 通过 `setValueByPath` 设置值后，立即调用 `getValueByPath` 可以读到最新值。
+- 表单项尚未挂载（如条件渲染）时，可通过 `setValueByPath(path, value, true)` 或在 `setValues` 的参数项中设置 `applyOnMount: true` 预设值，表单项挂载时自动应用。
 
-更多细节见 `docs/custom-form-component-guide.md` 与 `docs/integration.md`。
+更多细节见 [自定义表单组件封装指南](https://github.com/liuxian496/litmoss-form/blob/main/docs/custom-form-component-guide.md)、[接入文档](https://github.com/liuxian496/litmoss-form/blob/main/docs/integration.md) 与 [版本升级指南](https://github.com/liuxian496/litmoss-form/blob/main/docs/upgrade.md)。

@@ -75,8 +75,10 @@ export function setHelpTextByPath(
 
 /**
  * 设置表单数据
- * @param {FormArgs} args 表单项参数数组
+ * @param {FormArgs} args 表单项参数数组，参数项的 applyOnMount 为 true 且表单项未挂载时，暂存该值
  * @param {FormRegister} formRegister 表单注册器
+ * @param {PendingValues} pendingValues 未挂载表单项的待应用值
+ * @returns 设值后校验失败的提示信息数组，不包含被暂存的项
  */
 export function setValues(
   args: FormArgs,
@@ -122,6 +124,9 @@ export function setValues(
  * @param path 表单项的唯一路径（valuePath）
  * @param value 需要设置的新值
  * @param formRegister 当前表单的注册器对象
+ * @param pendingValues 未挂载表单项的待应用值
+ * @param applyOnMount 为 true 且表单项未挂载时，暂存该值，待其挂载时应用
+ * @returns 校验结果；校验通过、值被暂存或路径不存在时为 undefined
  */
 export function setValueByPath(
   path: string,
